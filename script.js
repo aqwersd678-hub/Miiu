@@ -10,9 +10,13 @@ let videoCheckTimer = null;
 let videoFinished = false;
 
 
+/* =====================================================
+   IMAGE LIST
+===================================================== */
+
 /*
-  Ảnh trước video:
-  1 → 2 → 3
+   Ảnh trước video:
+   1 → 2 → 3
 */
 
 const preVideoImages = [
@@ -23,14 +27,15 @@ const preVideoImages = [
 
 
 /*
-  Ảnh sau câu hỏi:
-  7 → 4 → 5
+   Ảnh sau câu hỏi:
+   7 → 4 → 5 → 8
 */
 
 const postQuestionImages = [
   "7.png",
   "4.png",
-  "5.png"
+  "5.png",
+  "8.png"
 ];
 
 
@@ -131,9 +136,7 @@ function preloadEverything() {
 
       setTimeout(function() {
 
-        loadingScreen
-          .classList
-          .add("hide");
+        loadingScreen.classList.add("hide");
 
       }, 500);
 
@@ -157,10 +160,11 @@ function startMusic1() {
 
   if (playPromise !== undefined) {
 
-    playPromise.catch(function() {
+    playPromise.catch(function(error) {
 
       console.log(
-        "Music 1 bị trình duyệt chặn."
+        "Music 1 bị trình duyệt chặn.",
+        error
       );
 
     });
@@ -185,10 +189,11 @@ function startMusic2() {
 
   if (playPromise !== undefined) {
 
-    playPromise.catch(function() {
+    playPromise.catch(function(error) {
 
       console.log(
-        "Music 2 bị trình duyệt chặn."
+        "Music 2 bị trình duyệt chặn.",
+        error
       );
 
     });
@@ -207,8 +212,8 @@ envelope.addEventListener(
   function() {
 
     /*
-      Lần 1:
-      mở mèo
+       Lần 1:
+       mở mèo
     */
 
     if (stage === 0) {
@@ -218,12 +223,13 @@ envelope.addEventListener(
       stage = 1;
 
       return;
+
     }
 
 
     /*
-      Lần 2:
-      hoa + nhạc 1
+       Lần 2:
+       hoa + nhạc 1
     */
 
     if (stage === 1) {
@@ -237,14 +243,14 @@ envelope.addEventListener(
 
 
       /*
-        Nhạc 1 bắt đầu
+         Nhạc 1 bắt đầu
       */
 
       startMusic1();
 
 
       /*
-        Hoa
+         Hoa
       */
 
       startFlowerTransition();
@@ -355,7 +361,7 @@ function startFlowerTransition() {
 
 
   /*
-    Hoa phủ màn hình
+     Hoa phủ màn hình
   */
 
   setTimeout(function() {
@@ -370,8 +376,8 @@ function startFlowerTransition() {
 
 
   /*
-    Sau hoa:
-    ảnh 1
+     Sau hoa:
+     ảnh 1
   */
 
   setTimeout(function() {
@@ -522,7 +528,7 @@ function showPostQuestionImage(newIndex) {
 
 
   /*
-    Nếu là ảnh 7
+     Nếu là ảnh 7
   */
 
   if (index === 0) {
@@ -587,8 +593,9 @@ viewer.addEventListener(
           viewer.style.display =
             "none";
 
+
           /*
-            Ảnh 3 → video
+             Ảnh 3 → video
           */
 
           playVideo();
@@ -599,6 +606,7 @@ viewer.addEventListener(
 
 
       return;
+
     }
 
 
@@ -636,6 +644,7 @@ viewer.addEventListener(
 
 
       return;
+
     }
 
 
@@ -666,12 +675,13 @@ viewer.addEventListener(
 
 
       return;
+
     }
 
 
     /* ===============================================
        ẢNH 5
-       → HẾT...
+       → ẢNH 8
     =============================================== */
 
     if (
@@ -687,7 +697,42 @@ viewer.addEventListener(
 
 
       /*
-        Music 2 KHÔNG dừng
+         Music 2 KHÔNG dừng
+      */
+
+      setTimeout(function() {
+
+        showPostQuestionImage(
+          3
+        );
+
+      }, 420);
+
+
+      return;
+
+    }
+
+
+    /* ===============================================
+       ẢNH 8
+       → HẾT...
+    =============================================== */
+
+    if (
+      stage === 6 &&
+      index === 3
+    ) {
+
+      canNext = false;
+
+      viewer.classList.remove(
+        "show"
+      );
+
+
+      /*
+         Music 2 VẪN TIẾP TỤC
       */
 
       setTimeout(function() {
@@ -703,6 +748,7 @@ viewer.addEventListener(
 
 
       return;
+
     }
 
   }
@@ -723,7 +769,7 @@ function playVideo() {
 
 
   /*
-    Xóa timer cũ
+     Xóa timer cũ
   */
 
   if (videoCheckTimer !== null) {
@@ -738,7 +784,7 @@ function playVideo() {
 
 
   /*
-    Hiện video
+     Hiện video
   */
 
   videoViewer.style.display =
@@ -750,8 +796,10 @@ function playVideo() {
 
 
   /*
-    Reset video
+     Reset video
   */
+
+  videoViewer.pause();
 
   try {
 
@@ -765,7 +813,7 @@ function playVideo() {
 
 
   /*
-    Hiệu ứng hiện video
+     Hiệu ứng hiện video
   */
 
   requestAnimationFrame(function() {
@@ -778,67 +826,96 @@ function playVideo() {
 
 
   /*
-    Không có controls
+     Không có controls
   */
 
   videoViewer.controls = false;
 
 
   /*
-    Đợi video có metadata
-    rồi mới bắt đầu kiểm tra
+     Bắt buộc load lại metadata
+  */
+
+  videoViewer.load();
+
+
+  /*
+     Hàm bắt đầu phát
+  */
+
+  function startVideo() {
+
+    if (
+      stage !== 5 ||
+      videoFinished
+    ) {
+
+      return;
+
+    }
+
+
+    console.log(
+      "VIDEO READY - duration:",
+      videoViewer.duration
+    );
+
+
+    const playPromise =
+      videoViewer.play();
+
+
+    if (
+      playPromise !== undefined
+    ) {
+
+      playPromise
+        .then(function() {
+
+          console.log(
+            "VIDEO ĐANG PHÁT"
+          );
+
+          startVideoWatcher();
+
+        })
+        .catch(function(error) {
+
+          console.log(
+            "Không thể tự phát video:",
+            error
+          );
+
+        });
+
+    } else {
+
+      startVideoWatcher();
+
+    }
+
+  }
+
+
+  /*
+     Nếu metadata đã có
   */
 
   if (
     videoViewer.readyState >= 1
   ) {
 
-    startVideoWatcher();
+    startVideo();
 
   } else {
 
     videoViewer.addEventListener(
       "loadedmetadata",
-      startVideoWatcher,
+      startVideo,
       {
         once: true
       }
     );
-
-  }
-
-
-  /*
-    Phát video
-  */
-
-  const playPromise =
-    videoViewer.play();
-
-
-  if (
-    playPromise !== undefined
-  ) {
-
-    playPromise
-      .then(function() {
-
-        /*
-          Đảm bảo watcher
-          được bật sau khi play
-        */
-
-        startVideoWatcher();
-
-      })
-      .catch(function(error) {
-
-        console.log(
-          "Không thể tự phát video:",
-          error
-        );
-
-      });
 
   }
 
@@ -851,18 +928,14 @@ function playVideo() {
 
 function startVideoWatcher() {
 
-  if (stage !== 5) {
-    return;
-  }
+  if (
+    videoCheckTimer !== null
+  ) {
 
+    clearInterval(
+      videoCheckTimer
+    );
 
-  /*
-    Nếu đã có timer
-    thì không tạo thêm
-  */
-
-  if (videoCheckTimer !== null) {
-    return;
   }
 
 
@@ -870,10 +943,13 @@ function startVideoWatcher() {
     setInterval(function() {
 
       /*
-        Không còn ở video
+         Không còn ở video
       */
 
-      if (stage !== 5) {
+      if (
+        stage !== 5 ||
+        videoFinished
+      ) {
 
         clearInterval(
           videoCheckTimer
@@ -886,20 +962,32 @@ function startVideoWatcher() {
       }
 
 
+      const current =
+        videoViewer.currentTime;
+
       const duration =
         videoViewer.duration;
 
-      const currentTime =
-        videoViewer.currentTime;
+
+      /*
+         Debug
+      */
+
+      console.log(
+        "VIDEO:",
+        current,
+        "/",
+        duration
+      );
 
 
       /*
-        Chưa biết duration
+         Chưa có duration
       */
 
       if (
-        !duration ||
-        !isFinite(duration)
+        !isFinite(duration) ||
+        duration <= 0
       ) {
 
         return;
@@ -908,12 +996,12 @@ function startVideoWatcher() {
 
 
       /*
-        Video đã chạy gần hết
+         Video gần hết
       */
 
       if (
-        currentTime >=
-        duration - 0.25
+        current >=
+        duration - 0.15
       ) {
 
         goToQuestion();
@@ -926,15 +1014,21 @@ function startVideoWatcher() {
 
 
 /* =====================================================
-   VIDEO END
+   VIDEO EVENTS
 ===================================================== */
 
 /*
-  Nếu browser phát event ended
+   Cách 1:
+   Browser báo video đã kết thúc
 */
+
 videoViewer.addEventListener(
   "ended",
   function() {
+
+    console.log(
+      "VIDEO ENDED EVENT"
+    );
 
     goToQuestion();
 
@@ -943,26 +1037,82 @@ videoViewer.addEventListener(
 
 
 /*
-  Chuyển video → câu hỏi
+   Cách 2:
+   Kiểm tra bằng timeupdate
 */
+
+videoViewer.addEventListener(
+  "timeupdate",
+  function() {
+
+    if (
+      stage !== 5 ||
+      videoFinished
+    ) {
+
+      return;
+
+    }
+
+
+    const current =
+      videoViewer.currentTime;
+
+    const duration =
+      videoViewer.duration;
+
+
+    if (
+      isFinite(duration) &&
+      duration > 0 &&
+      current >=
+      duration - 0.15
+    ) {
+
+      console.log(
+        "VIDEO TIMEUPDATE ĐÃ TỚI CUỐI"
+      );
+
+      goToQuestion();
+
+    }
+
+  }
+);
+
+
+/* =====================================================
+   VIDEO → QUESTION
+===================================================== */
+
 function goToQuestion() {
 
   /*
-    Chống chạy nhiều lần
+     Chống chạy nhiều lần
   */
 
   if (videoFinished) {
+
     return;
+
   }
+
 
   videoFinished = true;
 
 
+  console.log(
+    "CHUYỂN VIDEO → QUESTION"
+  );
+
+
   /*
-    Dừng timer
+     Dừng timer
   */
 
-  if (videoCheckTimer !== null) {
+  if (
+    videoCheckTimer !== null
+  ) {
 
     clearInterval(
       videoCheckTimer
@@ -974,7 +1124,7 @@ function goToQuestion() {
 
 
   /*
-    Dừng nhạc 1
+     Dừng nhạc 1
   */
 
   bgMusic.pause();
@@ -983,7 +1133,7 @@ function goToQuestion() {
 
 
   /*
-    Fade
+     Fade
   */
 
   videoFade.classList.add(
@@ -992,10 +1142,14 @@ function goToQuestion() {
 
 
   /*
-    Chuyển sang câu hỏi
+     Chuyển sang câu hỏi
   */
 
   setTimeout(function() {
+
+    /*
+       Dừng video
+    */
 
     videoViewer.pause();
 
@@ -1006,22 +1160,32 @@ function goToQuestion() {
     videoViewer.style.display =
       "none";
 
-    videoViewer.currentTime = 0;
+
+    try {
+
+      videoViewer.currentTime = 0;
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
 
 
     /*
-      Hiện câu hỏi
+       Hiện câu hỏi
     */
 
     questionBox.classList.add(
       "show"
     );
 
+
     stage = 4;
 
 
     /*
-      Bỏ fade
+       Bỏ fade
     */
 
     setTimeout(function() {
@@ -1032,13 +1196,13 @@ function goToQuestion() {
 
     }, 400);
 
-  }, 700);
+  }, 500);
 
 }
 
 
 /* =====================================================
-   YES
+   YES BUTTON
 ===================================================== */
 
 yesBtn.addEventListener(
@@ -1046,7 +1210,7 @@ yesBtn.addEventListener(
   function() {
 
     /*
-      Đóng câu hỏi
+       Đóng câu hỏi
     */
 
     questionBox.classList.remove(
@@ -1054,11 +1218,15 @@ yesBtn.addEventListener(
     );
 
 
+    /*
+       Dừng chuyển động nút NO
+    */
+
     stopNoButtonMovement();
 
 
     /*
-      Ảnh 7
+       Ảnh 7
     */
 
     setTimeout(function() {
@@ -1108,12 +1276,14 @@ function moveNoButton() {
 
   const x =
     padding +
-    Math.random() * maxX;
+    Math.random() *
+    maxX;
 
 
   const y =
     padding +
-    Math.random() * maxY;
+    Math.random() *
+    maxY;
 
 
   noBtn.style.position =
@@ -1132,8 +1302,8 @@ function moveNoButton() {
 
 
 /*
-  Desktop:
-  rê chuột tới → né
+   Desktop:
+   rê chuột tới → né
 */
 
 noBtn.addEventListener(
@@ -1147,8 +1317,8 @@ noBtn.addEventListener(
 
 
 /*
-  Mobile:
-  chạm → né
+   Mobile:
+   chạm → né
 */
 
 noBtn.addEventListener(
@@ -1167,8 +1337,8 @@ noBtn.addEventListener(
 
 
 /*
-  Nếu click được
-  → vẫn né
+   Nếu click được
+   → vẫn né
 */
 
 noBtn.addEventListener(
@@ -1209,8 +1379,8 @@ oneMoreBtn.addEventListener(
   function() {
 
     /*
-      Đóng:
-      "Còn 1 điều nữa..."
+       Đóng:
+       "Còn 1 điều nữa..."
     */
 
     oneMoreBox.classList.remove(
@@ -1219,7 +1389,7 @@ oneMoreBtn.addEventListener(
 
 
     /*
-      ẢNH 4 + NHẠC 2
+       ẢNH 4 + NHẠC 2
     */
 
     setTimeout(function() {
@@ -1230,8 +1400,8 @@ oneMoreBtn.addEventListener(
 
 
       /*
-        Music 2 bắt đầu
-        đúng lúc ảnh 4 hiện
+         Music 2 bắt đầu
+         đúng lúc ảnh 4 hiện
       */
 
       startMusic2();
