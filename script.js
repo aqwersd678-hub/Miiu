@@ -6,6 +6,9 @@ let stage = 0;
 let index = 0;
 let canNext = false;
 
+let videoCheckTimer = null;
+let videoFinished = false;
+
 
 /*
   Ảnh trước video:
@@ -519,8 +522,7 @@ function showPostQuestionImage(newIndex) {
 
 
   /*
-    Nếu đây là ảnh 7:
-    hiện "Cảm ơn công chúa..."
+    Nếu là ảnh 7
   */
 
   if (index === 0) {
@@ -585,10 +587,8 @@ viewer.addEventListener(
           viewer.style.display =
             "none";
 
-
           /*
-            Ảnh 3 xong
-            → video
+            Ảnh 3 → video
           */
 
           playVideo();
@@ -627,7 +627,6 @@ viewer.addEventListener(
 
         viewer.style.display =
           "none";
-
 
         oneMoreBox.classList.add(
           "show"
@@ -688,7 +687,7 @@ viewer.addEventListener(
 
 
       /*
-        Không dừng music2
+        Music 2 KHÔNG dừng
       */
 
       setTimeout(function() {
@@ -714,10 +713,6 @@ viewer.addEventListener(
    VIDEO
 ===================================================== */
 
-let videoCheckTimer = null;
-let videoFinished = false;
-
-
 function playVideo() {
 
   stage = 5;
@@ -728,10 +723,10 @@ function playVideo() {
 
 
   /*
-    Xóa timer cũ nếu có
+    Xóa timer cũ
   */
 
-  if (videoCheckTimer) {
+  if (videoCheckTimer !== null) {
 
     clearInterval(
       videoCheckTimer
@@ -743,16 +738,35 @@ function playVideo() {
 
 
   /*
-    Reset video
+    Hiện video
   */
-
-  videoViewer.pause();
-
-  videoViewer.currentTime = 0;
 
   videoViewer.style.display =
     "block";
 
+  videoViewer.classList.remove(
+    "video-show"
+  );
+
+
+  /*
+    Reset video
+  */
+
+  try {
+
+    videoViewer.currentTime = 0;
+
+  } catch (error) {
+
+    console.log(error);
+
+  }
+
+
+  /*
+    Hiệu ứng hiện video
+  */
 
   requestAnimationFrame(function() {
 
@@ -764,10 +778,34 @@ function playVideo() {
 
 
   /*
-    Không cho điều khiển
+    Không có controls
   */
 
   videoViewer.controls = false;
+
+
+  /*
+    Đợi video có metadata
+    rồi mới bắt đầu kiểm tra
+  */
+
+  if (
+    videoViewer.readyState >= 1
+  ) {
+
+    startVideoWatcher();
+
+  } else {
+
+    videoViewer.addEventListener(
+      "loadedmetadata",
+      startVideoWatcher,
+      {
+        once: true
+      }
+    );
+
+  }
 
 
   /*
@@ -782,44 +820,49 @@ function playVideo() {
     playPromise !== undefined
   ) {
 
-    playPromise.catch(function(error) {
+    playPromise
+      .then(function() {
 
-      console.log(
-        "Không thể tự phát video:",
-        error
-      );
+        /*
+          Đảm bảo watcher
+          được bật sau khi play
+        */
 
-    });
+        startVideoWatcher();
+
+      })
+      .catch(function(error) {
+
+        console.log(
+          "Không thể tự phát video:",
+          error
+        );
+
+      });
 
   }
-
-
-  /*
-    Bắt đầu kiểm tra video
-    liên tục để hỗ trợ mobile
-  */
-
-  startVideoEndCheck();
 
 }
 
 
 /* =====================================================
-   VIDEO END CHECK
-   Hỗ trợ điện thoại
+   VIDEO WATCHER
 ===================================================== */
 
-function startVideoEndCheck() {
+function startVideoWatcher() {
 
-  videoFinished = false;
+  if (stage !== 5) {
+    return;
+  }
 
 
-  if (videoCheckTimer) {
+  /*
+    Nếu đã có timer
+    thì không tạo thêm
+  */
 
-    clearInterval(
-      videoCheckTimer
-    );
-
+  if (videoCheckTimer !== null) {
+    return;
   }
 
 
@@ -827,15 +870,50 @@ function startVideoEndCheck() {
     setInterval(function() {
 
       /*
-        Nếu video có duration
-        và đã gần tới cuối
+        Không còn ở video
+      */
+
+      if (stage !== 5) {
+
+        clearInterval(
+          videoCheckTimer
+        );
+
+        videoCheckTimer = null;
+
+        return;
+
+      }
+
+
+      const duration =
+        videoViewer.duration;
+
+      const currentTime =
+        videoViewer.currentTime;
+
+
+      /*
+        Chưa biết duration
       */
 
       if (
-        videoViewer.duration &&
-        isFinite(videoViewer.duration) &&
-        videoViewer.currentTime >=
-          videoViewer.duration - 0.3
+        !duration ||
+        !isFinite(duration)
+      ) {
+
+        return;
+
+      }
+
+
+      /*
+        Video đã chạy gần hết
+      */
+
+      if (
+        currentTime >=
+        duration - 0.25
       ) {
 
         goToQuestion();
@@ -848,9 +926,25 @@ function startVideoEndCheck() {
 
 
 /* =====================================================
-   CHUYỂN VIDEO → CÂU HỎI
+   VIDEO END
 ===================================================== */
 
+/*
+  Nếu browser phát event ended
+*/
+videoViewer.addEventListener(
+  "ended",
+  function() {
+
+    goToQuestion();
+
+  }
+);
+
+
+/*
+  Chuyển video → câu hỏi
+*/
 function goToQuestion() {
 
   /*
@@ -868,7 +962,7 @@ function goToQuestion() {
     Dừng timer
   */
 
-  if (videoCheckTimer) {
+  if (videoCheckTimer !== null) {
 
     clearInterval(
       videoCheckTimer
@@ -898,30 +992,12 @@ function goToQuestion() {
 
 
   /*
-    Thoát fullscreen nếu
-    người dùng đang ở fullscreen
-  */
-
-  if (document.fullscreenElement) {
-
-    document
-      .exitFullscreen()
-      .catch(function() {});
-
-  }
-
-
-  /*
-    Sau fade:
-    video → câu hỏi
+    Chuyển sang câu hỏi
   */
 
   setTimeout(function() {
 
     videoViewer.pause();
-
-    videoViewer.currentTime =
-      0;
 
     videoViewer.classList.remove(
       "video-show"
@@ -929,6 +1005,8 @@ function goToQuestion() {
 
     videoViewer.style.display =
       "none";
+
+    videoViewer.currentTime = 0;
 
 
     /*
@@ -952,66 +1030,11 @@ function goToQuestion() {
         "active"
       );
 
-    }, 500);
+    }, 400);
 
-  }, 850);
+  }, 700);
 
 }
-
-
-/* =====================================================
-   VIDEO ENDED
-   Dự phòng chính
-===================================================== */
-
-videoViewer.addEventListener(
-  "ended",
-  function() {
-
-    goToQuestion();
-
-  }
-);
-
-
-/* =====================================================
-   VIDEO - KHÔNG CHO CLICK PAUSE
-===================================================== */
-
-videoViewer.addEventListener(
-  "click",
-  function(event) {
-
-    event.preventDefault();
-
-  }
-);
-
-
-videoViewer.addEventListener(
-  "pointerdown",
-  function(event) {
-
-    event.preventDefault();
-
-  }
-);
-
-
-/* =====================================================
-   VIDEO ERROR
-===================================================== */
-
-videoViewer.addEventListener(
-  "error",
-  function() {
-
-    console.log(
-      "Video không thể phát."
-    );
-
-  }
-);
 
 
 /* =====================================================
@@ -1109,8 +1132,8 @@ function moveNoButton() {
 
 
 /*
-  Rê chuột tới:
-  né
+  Desktop:
+  rê chuột tới → né
 */
 
 noBtn.addEventListener(
@@ -1125,8 +1148,7 @@ noBtn.addEventListener(
 
 /*
   Mobile:
-  chạm vào:
-  né
+  chạm → né
 */
 
 noBtn.addEventListener(
@@ -1145,8 +1167,8 @@ noBtn.addEventListener(
 
 
 /*
-  Nếu click được:
-  vẫn né
+  Nếu click được
+  → vẫn né
 */
 
 noBtn.addEventListener(
