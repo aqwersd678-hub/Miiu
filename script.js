@@ -953,95 +953,60 @@ videoViewer.addEventListener(
    VIDEO END
 ===================================================== */
 
-videoViewer.addEventListener(
-  "ended",
-  function() {
+function goToQuestion() {
 
-    /*
-      NHẠC 1 DỪNG
-    */
-
-    bgMusic.pause();
-
-    bgMusic.currentTime = 0;
-
-
-    /*
-      Fade
-    */
-
-    videoFade.classList.add(
-      "active"
-    );
-
-
-    /*
-      Thoát fullscreen
-    */
-
-    if (
-      document.fullscreenElement
-    ) {
-
-      document
-        .exitFullscreen()
-        .catch(
-          function() {}
-        );
-
-    }
-
-
-    /*
-      Sau khi video biến mất
-      → câu hỏi
-    */
-
-    setTimeout(
-      function() {
-
-        videoViewer.pause();
-
-        videoViewer.currentTime =
-          0;
-
-        videoViewer.classList.remove(
-          "video-show"
-        );
-
-        videoViewer.style.display =
-          "none";
-
-
-        /*
-          Câu hỏi xuất hiện
-        */
-
-        questionBox.classList.add(
-          "show"
-        );
-
-        stage = 4;
-
-
-        setTimeout(
-          function() {
-
-            videoFade.classList.remove(
-              "active"
-            );
-
-          },
-          500
-        );
-
-      },
-      850
-    );
-
+  if (stage === 4) {
+    return;
   }
-);
 
+  // Dừng nhạc 1
+  bgMusic.pause();
+  bgMusic.currentTime = 0;
+
+  // Fade
+  videoFade.classList.add("active");
+
+  // Thoát fullscreen
+  if (document.fullscreenElement) {
+    document.exitFullscreen().catch(function() {});
+  }
+
+  setTimeout(function() {
+
+    videoViewer.pause();
+    videoViewer.currentTime = 0;
+    videoViewer.classList.remove("video-show");
+    videoViewer.style.display = "none";
+
+    // Hiện câu hỏi
+    questionBox.classList.add("show");
+    stage = 4;
+
+    setTimeout(function() {
+      videoFade.classList.remove("active");
+    }, 500);
+
+  }, 850);
+}
+
+
+// Video kết thúc bình thường
+videoViewer.addEventListener("ended", function() {
+  goToQuestion();
+});
+
+
+// Dự phòng nếu "ended" không chạy
+videoViewer.addEventListener("timeupdate", function() {
+
+  if (
+    videoViewer.duration &&
+    videoViewer.currentTime >= videoViewer.duration - 0.15
+  ) {
+    goToQuestion();
+  }
+
+});
 
 /* =====================================================
    YES
