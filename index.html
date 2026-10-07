@@ -1,275 +1,180 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
+  <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    >
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
 
-    <title>💗 Một điều nhỏ dành cho em</title>
+  <title>For My Princess 💗</title>
 
-    <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <!-- =========================================================
-         LOADING
-    ========================================================== -->
-    <div id="loadingScreen">
-        <div class="loadingContent">
-            <div class="loadingCat">🐱</div>
-            <div class="loadingText">Đang chuẩn bị một chút bất ngờ...</div>
-            <div class="loadingBar">
-                <div id="loadingProgress"></div>
-            </div>
-        </div>
-    </div>
+  <!-- =========================
+       LOADING
+  ========================== -->
+  <div id="loadingScreen">
+    <div class="loading-heart">💗</div>
+    <div class="loading-text">Đang chuẩn bị một điều nhỏ dành cho công chúa...</div>
+  </div>
 
 
-    <!-- =========================================================
-         HINT
-    ========================================================== -->
-    <div id="hint">
-        Chạm vào chú mèo nhé 🐱
-    </div>
+  <!-- =========================
+       HINT
+  ========================== -->
+  <div class="hint">
+    Chạm vào chú mèo đi nào... 🐱
+  </div>
 
 
-    <!-- =========================================================
-         CAT ENVELOPE
-    ========================================================== -->
-    <div id="catEnvelope">
+  <!-- =========================
+       CAT ENVELOPE
+  ========================== -->
+  <div class="cat-envelope" id="envelope">
 
-        <div class="catWrapper">
+    <div class="cat-ear left-ear"></div>
+    <div class="cat-ear right-ear"></div>
 
-            <div class="catEar leftEar"></div>
-            <div class="catEar rightEar"></div>
+    <div class="cat-body">
 
-            <div class="catFace">
+      <div class="cat-flap"></div>
 
-                <div class="catEye leftEye"></div>
-                <div class="catEye rightEye"></div>
+      <div class="cat-face">
+        <div class="cat-eye left-eye"></div>
+        <div class="cat-eye right-eye"></div>
 
-                <div class="catNose"></div>
+        <div class="cat-nose"></div>
 
-                <div class="catMouth leftMouth"></div>
-                <div class="catMouth rightMouth"></div>
-
-                <div class="catWhisker leftWhisker1"></div>
-                <div class="catWhisker leftWhisker2"></div>
-                <div class="catWhisker rightWhisker1"></div>
-                <div class="catWhisker rightWhisker2"></div>
-
-            </div>
-
-            <div class="catBody"></div>
-
+        <div class="cat-mouth">
+          <span></span>
+          <span></span>
         </div>
 
-        <div class="envelope">
-            <div class="envelopeBack"></div>
-            <div class="envelopeFront"></div>
-            <div class="envelopeFlap"></div>
+        <div class="cat-whisker left-w1"></div>
+        <div class="cat-whisker left-w2"></div>
+        <div class="cat-whisker right-w1"></div>
+        <div class="cat-whisker right-w2"></div>
+      </div>
 
-            <div class="envelopeText">
-                💌
-            </div>
-        </div>
+      <div class="cat-paw left-paw">🐾</div>
+      <div class="cat-paw right-paw">🐾</div>
 
     </div>
+  </div>
 
 
-    <!-- =========================================================
-         FLOWER TRANSITION
-    ========================================================== -->
-    <div id="flowerLayer"></div>
+  <!-- =========================
+       FLOWERS
+  ========================== -->
+  <div id="flowerLayer"></div>
 
 
-    <!-- =========================================================
-         MAIN VIEWER
-    ========================================================== -->
-    <main id="viewer">
+  <!-- =========================
+       IMAGE VIEWER
+  ========================== -->
+  <img
+    id="viewer"
+    src=""
+    alt="memory"
+  >
 
-        <!-- IMAGE VIEW -->
-        <div id="imageViewer">
-
-            <img
-                id="mainImage"
-                src=""
-                alt=""
-                draggable="false"
-            >
-
-            <div id="imageCaption"></div>
-
-        </div>
+  <div id="imageCaption"></div>
 
 
-        <!-- =====================================================
-             VIDEO
-        ====================================================== -->
-        <div id="videoViewerWrapper">
+  <!-- =========================
+       VIDEO
+  ========================== -->
+  <video
+    id="videoViewer"
+    playsinline
+    webkit-playsinline
+    preload="auto"
+  >
+    <source src="video.mp4" type="video/mp4">
+  </video>
 
-            <video
-                id="videoViewer"
-                playsinline
-                webkit-playsinline
-                preload="auto"
-                disablepictureinpicture
-                controlslist="nodownload nofullscreen noremoteplayback"
-            >
-                <source
-                    src="video.mp4"
-                    type="video/mp4"
-                >
-            </video>
-
-            <!-- Màn che khi video chuyển sang câu hỏi -->
-            <div id="videoFade"></div>
-
-        </div>
+  <div id="videoFade"></div>
 
 
-        <!-- =====================================================
-             QUESTION
-        ====================================================== -->
-        <section id="questionBox">
+  <!-- =========================
+       QUESTION
+  ========================== -->
+  <div id="questionBox">
 
-            <div class="questionCard">
+    <div class="question-card">
 
-                <img
-                    id="questionImage"
-                    src="6.png"
-                    alt=""
-                    draggable="false"
-                >
+      <img
+        src="6.png"
+        class="question-image"
+        alt="question"
+      >
 
-                <div class="questionText">
-                    Tiểu thư có muốn từ chối không? 🥺
-                </div>
+      <div class="question-text">
+        Tiểu thư có muốn từ chối không?
+      </div>
 
-                <div class="questionButtons">
+      <div class="question-buttons">
 
-                    <button
-                        id="yesBtn"
-                        type="button"
-                    >
-                        YESN'T 💗
-                    </button>
+        <button id="yesBtn">
+          YESN'T 💗
+        </button>
 
-                    <button
-                        id="noBtn"
-                        type="button"
-                    >
-                        NON'T 😌
-                    </button>
+        <button id="noBtn">
+          NON'T 🙈
+        </button>
 
-                </div>
+      </div>
 
-            </div>
+    </div>
 
-        </section>
+  </div>
 
 
-        <!-- =====================================================
-             IMAGE 7 MESSAGE
-        ====================================================== -->
-        <section id="image7Message">
+  <!-- =========================
+       MESSAGE
+  ========================== -->
+  <div id="messageBox">
 
-            <div class="messageCard">
+    <div class="message-text" id="messageText">
+      Cảm ơn công chúa đã tham gia 💗
+    </div>
 
-                <img
-                    id="image7"
-                    src="7.png"
-                    alt=""
-                    draggable="false"
-                >
+    <button id="messageNext">
+      Tiếp tục ✨
+    </button>
 
-                <div id="thanksText">
-                    Cảm ơn công chúa đã tham gia 💗
-                </div>
-
-            </div>
-
-        </section>
+  </div>
 
 
-        <!-- =====================================================
-             ONE MORE THING
-        ====================================================== -->
-        <section id="oneMoreBox">
+  <!-- =========================
+       MUSIC
+  ========================== -->
 
-            <div class="oneMoreCard">
-
-                <div class="oneMoreText">
-                    Còn 1 điều nữa...
-                </div>
-
-                <button
-                    id="oneMoreBtn"
-                    type="button"
-                >
-                    Xem tiếp 💗
-                </button>
-
-            </div>
-
-        </section>
+  <!-- Nhạc 1: mèo → hoa → ảnh 1 → 2 → 3 → video -->
+  <audio
+    id="bgMusic"
+    preload="auto"
+  >
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
 
 
-        <!-- =====================================================
-             END
-        ====================================================== -->
-        <section id="endBox">
-
-            <div class="endCard">
-
-                <div class="endText">
-                    Hết... 💗
-                </div>
-
-            </div>
-
-        </section>
-
-    </main>
+  <!-- Nhạc 2: bắt đầu từ ảnh 4 → ảnh 5 -->
+  <audio
+    id="bgMusic2"
+    preload="auto"
+    loop
+  >
+    <source src="music2.mp3" type="audio/mpeg">
+  </audio>
 
 
-    <!-- =========================================================
-         AUDIO
-    ========================================================== -->
-
-    <!-- Nhạc giai đoạn đầu -->
-    <audio
-        id="bgMusic"
-        preload="auto"
-    >
-        <source
-            src="music.mp3"
-            type="audio/mpeg"
-        >
-    </audio>
-
-
-    <!-- Nhạc giai đoạn cuối -->
-    <audio
-        id="bgMusic2"
-        preload="auto"
-        loop
-    >
-        <source
-            src="music2.mp3"
-            type="audio/mpeg"
-        >
-    </audio>
-
-
-    <!-- =========================================================
-         SCRIPT
-    ========================================================== -->
-    <script src="script.js"></script>
+  <script src="script.js"></script>
 
 </body>
 </html>
