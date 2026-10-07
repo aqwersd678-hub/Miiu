@@ -1,6 +1,5 @@
 * {
   box-sizing: border-box;
-
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -32,6 +31,41 @@ body {
     sans-serif;
 
   user-select: none;
+
+  transition:
+    background 0.7s ease;
+}
+
+
+/* =====================================================
+   BACKGROUND THEO TỪNG PHẦN
+===================================================== */
+
+/* Ảnh 1 - 2 - 3 */
+body.bg-pink {
+  background:
+    radial-gradient(
+      circle at center,
+      #fff9fc 0%,
+      #ffeaf3 50%,
+      #f8d9e7 100%
+    );
+}
+
+/* Ảnh 4 - 5 - 6 - 7 */
+body.bg-blue {
+  background:
+    radial-gradient(
+      circle at center,
+      #f5fdff 0%,
+      #e4f7fa 50%,
+      #ccebf0 100%
+    );
+}
+
+/* Ảnh 8 - 9 */
+body.bg-black {
+  background: #000;
 }
 
 
@@ -602,6 +636,10 @@ body {
 #viewer.show {
   opacity: 1;
 
+  visibility: visible;
+
+  display: block;
+
   transform:
     translate(-50%, -50%)
     scale(1);
@@ -609,7 +647,7 @@ body {
 
 
 /* =====================================================
-   VIDEO
+   VIDEO 1
 ===================================================== */
 
 #videoViewer {
@@ -654,7 +692,77 @@ body {
   opacity: 1;
 
   visibility: visible;
+
+  display: block;
 }
+
+
+/* =====================================================
+   VIDEO 2
+===================================================== */
+
+#videoViewer2 {
+  position: fixed;
+
+  left: 50%;
+  top: 50%;
+
+  width: 92vw;
+  height: 88vh;
+
+  max-width: 1400px;
+  max-height: 800px;
+
+  transform:
+    translate(-50%, -50%)
+    scale(.96);
+
+  object-fit: contain;
+
+  background: #000;
+
+  border:
+    10px solid
+    #ccecf1;
+
+  border-radius: 28px;
+
+  box-shadow:
+    0 0 0 3px rgba(255,255,255,.8),
+    0 20px 60px
+    rgba(80,140,150,.25);
+
+  opacity: 0;
+
+  visibility: hidden;
+
+  display: none;
+
+  z-index: 45;
+
+  pointer-events: none;
+
+  transition:
+    opacity .6s ease,
+    transform .6s ease;
+}
+
+#videoViewer2.video-show {
+  opacity: 1;
+
+  visibility: visible;
+
+  display: block;
+
+  transform:
+    translate(-50%, -50%)
+    scale(1);
+}
+
+
+/* =====================================================
+   VIDEO FADE
+===================================================== */
 
 #videoFade {
   position: fixed;
@@ -695,7 +803,7 @@ body {
   align-items: center;
 
   background:
-    rgba(255, 240, 248, .96);
+    rgba(223, 246, 249, .96);
 
   opacity: 0;
 
@@ -757,7 +865,7 @@ body {
 .question-text {
   margin-bottom: 25px;
 
-  color: #713d59;
+  color: #4d6870;
 
   font-size: 20px;
 
@@ -798,13 +906,13 @@ body {
 }
 
 #yesBtn {
-  background: #efa7c4;
+  background: #8dcfd8;
 
   color: white;
 
   box-shadow:
     0 8px 20px
-    rgba(220,120,160,.25);
+    rgba(100,180,190,.25);
 }
 
 #yesBtn:hover {
@@ -839,7 +947,7 @@ body {
 
   z-index: 80;
 
-  color: #77415d;
+  color: #4d7880;
 
   font-size:
     clamp(20px, 4vw, 28px);
@@ -897,8 +1005,8 @@ body {
   background:
     radial-gradient(
       circle,
-      #fffaff,
-      #fce6f0
+      #f5fdff,
+      #dff5f8
     );
 
   opacity: 0;
@@ -922,7 +1030,7 @@ body {
 #oneMoreText {
   max-width: 90vw;
 
-  color: #77415d;
+  color: #4d7880;
 
   font-size:
     clamp(26px, 5vw, 40px);
@@ -942,7 +1050,7 @@ body {
 
   border-radius: 999px;
 
-  background: #efa7c4;
+  background: #8dcfd8;
 
   color: white;
 
@@ -954,7 +1062,7 @@ body {
 
   box-shadow:
     0 10px 25px
-    rgba(210,110,150,.22);
+    rgba(90,170,180,.22);
 
   transition:
     transform .2s ease;
@@ -982,14 +1090,9 @@ body {
   justify-content: center;
   align-items: center;
 
-  background:
-    radial-gradient(
-      circle,
-      #fffaff,
-      #fce6f0
-    );
+  background: #000;
 
-  color: #77415d;
+  color: white;
 
   font-size:
     clamp(32px, 7vw, 55px);
@@ -1013,118 +1116,6 @@ body {
 }
 
 
-/* =====================================================
-   MOBILE
-===================================================== */
-
-@media (max-width: 600px) {
-
-  .hint {
-    bottom: 10%;
-
-    font-size: 14px;
-  }
-
-  .cat-envelope {
-    width: 245px;
-    height: 205px;
-  }
-
-  #viewer {
-    left: 50%;
-    top: 50%;
-
-    width: auto;
-    height: auto;
-
-    max-width: 92vw;
-    max-height: 72vh;
-
-    margin: 0;
-
-    transform:
-      translate(-50%, -50%)
-      scale(.97);
-
-    border-radius: 14px;
-  }
-
-  #viewer.show {
-    transform:
-      translate(-50%, -50%)
-      scale(1);
-  }
-
-  #videoViewer {
-    left: 50%;
-    top: 50%;
-
-    width: 100vw;
-    height: 100vh;
-
-    width: 100dvw;
-    height: 100dvh;
-
-    max-width: none;
-    max-height: none;
-
-    border-radius: 0;
-
-    object-fit: cover;
-
-    transform:
-      translate(-50%, -50%)
-      scale(1);
-  }
-
-  #videoViewer.video-show {
-    transform:
-      translate(-50%, -50%)
-      scale(1);
-  }
-
-  .question-card {
-    width: 91vw;
-
-    padding:
-      20px
-      17px
-      25px;
-  }
-
-  .question-image {
-    max-height: 40vh;
-  }
-
-  .question-text {
-    font-size: 18px;
-  }
-
-  .question-buttons {
-    gap: 12px;
-  }
-
-  .question-buttons button {
-    padding:
-      12px
-      19px;
-
-    font-size: 15px;
-  }
-
-  #image7Message {
-    bottom: 8%;
-
-    font-size: 20px;
-
-    white-space: normal;
-
-    width: 90vw;
-  }
-
-  #oneMoreText {
-    font-size: 28px;
-  }
 /* =====================================================
    ANSWER BOX
 ===================================================== */
@@ -1158,20 +1149,15 @@ body {
     visibility 0.7s ease;
 }
 
-
 #answerBox.show {
-
   opacity: 1;
 
   visibility: visible;
 
   pointer-events: auto;
-
 }
 
-
 .answer-card {
-
   width: min(
     520px,
     calc(100vw - 40px)
@@ -1198,18 +1184,13 @@ body {
     transform 0.7s ease;
 }
 
-
 #answerBox.show .answer-card {
-
   transform:
     translateY(0)
     scale(1);
-
 }
 
-
 .answer-title {
-
   margin-bottom: 20px;
 
   font-size: 26px;
@@ -1219,9 +1200,7 @@ body {
   color: #b84c75;
 }
 
-
 #answerInput {
-
   width: 100%;
 
   min-height: 150px;
@@ -1255,28 +1234,20 @@ body {
     box-shadow 0.2s ease;
 }
 
-
 #answerInput:focus {
-
   border-color:
     rgba(200, 80, 130, 0.55);
 
   box-shadow:
     0 0 0 4px
     rgba(220, 120, 160, 0.10);
-
 }
-
 
 #answerInput::placeholder {
-
   color: #c7aab7;
-
 }
 
-
 #sendAnswerBtn {
-
   margin-top: 18px;
 
   padding:
@@ -1312,34 +1283,23 @@ body {
     opacity 0.2s ease;
 }
 
-
 #sendAnswerBtn:hover {
-
   transform:
     translateY(-2px);
-
 }
-
 
 #sendAnswerBtn:active {
-
   transform:
     scale(0.96);
-
 }
 
-
 #sendAnswerBtn:disabled {
-
   opacity: 0.6;
 
   cursor: default;
-
 }
 
-
 #answerStatus {
-
   min-height: 24px;
 
   margin-top: 14px;
@@ -1347,41 +1307,189 @@ body {
   font-size: 14px;
 
   color: #b84c75;
-
 }
-
 
 #answerStatus.error {
-
   color: #d9534f;
-
 }
 
+
+/* =====================================================
+   MOBILE
+===================================================== */
 
 @media (max-width: 600px) {
 
-  .answer-card {
+  .hint {
+    bottom: 10%;
+
+    font-size: 14px;
+  }
+
+  .cat-envelope {
+    width: 245px;
+    height: 205px;
+  }
+
+
+  /* IMAGE */
+
+  #viewer {
+    left: 50%;
+    top: 50%;
+
+    width: auto;
+    height: auto;
+
+    max-width: 92vw;
+    max-height: 72vh;
+
+    margin: 0;
+
+    transform:
+      translate(-50%, -50%)
+      scale(.97);
+
+    border-radius: 14px;
+  }
+
+  #viewer.show {
+    transform:
+      translate(-50%, -50%)
+      scale(1);
+  }
+
+
+  /* VIDEO 1 */
+
+  #videoViewer {
+    left: 50%;
+    top: 50%;
+
+    width: 100vw;
+    height: 100vh;
+
+    width: 100dvw;
+    height: 100dvh;
+
+    max-width: none;
+    max-height: none;
+
+    border-radius: 0;
+
+    object-fit: cover;
+
+    transform:
+      translate(-50%, -50%)
+      scale(1);
+  }
+
+  #videoViewer.video-show {
+    transform:
+      translate(-50%, -50%)
+      scale(1);
+  }
+
+
+  /* VIDEO 2 */
+
+  #videoViewer2 {
+    left: 50%;
+    top: 50%;
+
+    width: 94vw;
+    height: 82vh;
+
+    max-width: none;
+    max-height: none;
+
+    padding: 0;
+
+    border-width: 7px;
+
+    border-radius: 20px;
+
+    object-fit: contain;
+
+    transform:
+      translate(-50%, -50%)
+      scale(.96);
+  }
+
+  #videoViewer2.video-show {
+    transform:
+      translate(-50%, -50%)
+      scale(1);
+  }
+
+
+  /* QUESTION */
+
+  .question-card {
+    width: 91vw;
 
     padding:
-      25px 18px 20px;
-
+      20px
+      17px
+      25px;
   }
 
+  .question-image {
+    max-height: 40vh;
+  }
+
+  .question-text {
+    font-size: 18px;
+  }
+
+  .question-buttons {
+    gap: 12px;
+  }
+
+  .question-buttons button {
+    padding:
+      12px
+      19px;
+
+    font-size: 15px;
+  }
+
+
+  /* IMAGE 7 */
+
+  #image7Message {
+    bottom: 8%;
+
+    font-size: 20px;
+
+    white-space: normal;
+
+    width: 90vw;
+  }
+
+
+  /* ONE MORE */
+
+  #oneMoreText {
+    font-size: 28px;
+  }
+
+
+  /* ANSWER */
+
+  .answer-card {
+    padding:
+      25px 18px 20px;
+  }
 
   .answer-title {
-
     font-size: 23px;
-
   }
 
-
   #answerInput {
-
     min-height: 135px;
 
     font-size: 15px;
-
   }
-
 
 }
