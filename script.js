@@ -799,42 +799,39 @@ viewer.addEventListener(
     =============================================== */
 
     if (
-      stage === 6 &&
-      index === 2
-    ) {
+  stage === 6 &&
+  index === 2
+) {
 
-      canNext = false;
+  canNext = false;
 
-      viewer.classList.remove(
+  viewer.classList.remove(
+    "show"
+  );
+
+
+  /*
+    Chuyển sang "Hết..."
+    nhưng KHÔNG dừng nhạc 2
+  */
+
+  setTimeout(
+    function() {
+
+      viewer.style.display =
+        "none";
+
+      endBox.classList.add(
         "show"
       );
 
-
-      /*
-        Dừng nhạc 2 khi kết thúc
-      */
-
-      bgMusic2.pause();
+    },
+    600
+  );
 
 
-      setTimeout(
-        function() {
-
-          viewer.style.display =
-            "none";
-
-
-          endBox.classList.add(
-            "show"
-          );
-
-        },
-        600
-      );
-
-
-      return;
-    }
+  return;
+}
 
   }
 );
