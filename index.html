@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <title>For My Princess 💗</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- =========================
+       LOADING
+  ========================== -->
+  <div id="loadingScreen">
+    <div class="loading-heart">💗</div>
+    <div class="loading-text">Đang chuẩn bị một điều nhỏ dành cho công chúa...</div>
+  </div>
+
+
+  <!-- =========================
+       HINT
+  ========================== -->
+  <div class="hint">
+    Chạm vào chú mèo đi nào... 🐱
+  </div>
+
+
+  <!-- =========================
+       CAT ENVELOPE
+  ========================== -->
+  <div class="cat-envelope" id="envelope">
+
+    <div class="cat-ear left-ear"></div>
+    <div class="cat-ear right-ear"></div>
+
+    <div class="cat-body">
+
+      <div class="cat-flap"></div>
+
+      <div class="cat-face">
+        <div class="cat-eye left-eye"></div>
+        <div class="cat-eye right-eye"></div>
+
+        <div class="cat-nose"></div>
+
+        <div class="cat-mouth">
+          <span></span>
+          <span></span>
+        </div>
+
+        <div class="cat-whisker left-w1"></div>
+        <div class="cat-whisker left-w2"></div>
+        <div class="cat-whisker right-w1"></div>
+        <div class="cat-whisker right-w2"></div>
+      </div>
+
+      <div class="cat-paw left-paw">🐾</div>
+      <div class="cat-paw right-paw">🐾</div>
+
+    </div>
+  </div>
+
+
+  <!-- =========================
+       FLOWERS
+  ========================== -->
+  <div id="flowerLayer"></div>
+
+
+  <!-- =========================
+       IMAGE VIEWER
+  ========================== -->
+  <img
+    id="viewer"
+    src=""
+    alt="memory"
+  >
+
+  <div id="imageCaption"></div>
+
+
+  <!-- =========================
+       VIDEO
+  ========================== -->
+  <video
+    id="videoViewer"
+    playsinline
+    webkit-playsinline
+    preload="auto"
+  >
+    <source src="video.mp4" type="video/mp4">
+  </video>
+
+  <div id="videoFade"></div>
+
+
+  <!-- =========================
+       QUESTION
+  ========================== -->
+  <div id="questionBox">
+
+    <div class="question-card">
+
+      <img
+        src="6.png"
+        class="question-image"
+        alt="question"
+      >
+
+      <div class="question-text">
+        Tiểu thư có muốn từ chối không?
+      </div>
+
+      <div class="question-buttons">
+
+        <button id="yesBtn">
+          YESN'T 💗
+        </button>
+
+        <button id="noBtn">
+          NON'T 🙈
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       MESSAGE
+  ========================== -->
+  <div id="messageBox">
+
+    <div class="message-text" id="messageText">
+      Cảm ơn công chúa đã tham gia 💗
+    </div>
+
+    <button id="messageNext">
+      Tiếp tục ✨
+    </button>
+
+  </div>
+
+
+  <!-- =========================
+       MUSIC
+  ========================== -->
+
+  <!-- Nhạc 1: mèo → hoa → ảnh 1 → 2 → 3 → video -->
+  <audio
+    id="bgMusic"
+    preload="auto"
+  >
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
+
+
+  <!-- Nhạc 2: bắt đầu từ ảnh 4 → ảnh 5 -->
+  <audio
+    id="bgMusic2"
+    preload="auto"
+    loop
+  >
+    <source src="music2.mp3" type="audio/mpeg">
+  </audio>
+
+
+  <script src="script.js"></script>
+
+</body>
+</html>
