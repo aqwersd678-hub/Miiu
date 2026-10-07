@@ -20,7 +20,10 @@
   ========================== -->
   <div id="loadingScreen">
     <div class="loading-heart">💗</div>
-    <div class="loading-text">Đang chuẩn bị một điều nhỏ dành cho công chúa...</div>
+
+    <div class="loading-text">
+      Đang chuẩn bị một điều nhỏ dành cho công chúa...
+    </div>
   </div>
 
 
@@ -45,6 +48,7 @@
       <div class="cat-flap"></div>
 
       <div class="cat-face">
+
         <div class="cat-eye left-eye"></div>
         <div class="cat-eye right-eye"></div>
 
@@ -57,8 +61,10 @@
 
         <div class="cat-whisker left-w1"></div>
         <div class="cat-whisker left-w2"></div>
+
         <div class="cat-whisker right-w1"></div>
         <div class="cat-whisker right-w2"></div>
+
       </div>
 
       <div class="cat-paw left-paw">🐾</div>
@@ -94,8 +100,13 @@
     playsinline
     webkit-playsinline
     preload="auto"
+    controlslist="nodownload nofullscreen noremoteplayback"
+    disablepictureinpicture
   >
-    <source src="video.mp4" type="video/mp4">
+    <source
+      src="video.mp4"
+      type="video/mp4"
+    >
   </video>
 
   <div id="videoFade"></div>
@@ -136,18 +147,34 @@
 
 
   <!-- =========================
-       MESSAGE
+       IMAGE 7 MESSAGE
   ========================== -->
-  <div id="messageBox">
+  <div id="image7Message">
+    Cảm ơn công chúa đã tham gia 💗
+  </div>
 
-    <div class="message-text" id="messageText">
-      Cảm ơn công chúa đã tham gia 💗
+
+  <!-- =========================
+       "CÒN 1 ĐIỀU NỮA..."
+  ========================== -->
+  <div id="oneMoreBox">
+
+    <div id="oneMoreText">
+      Còn 1 điều nữa...
     </div>
 
-    <button id="messageNext">
-      Tiếp tục ✨
+    <button id="oneMoreBtn">
+      Xem tiếp 💗
     </button>
 
+  </div>
+
+
+  <!-- =========================
+       END
+  ========================== -->
+  <div id="endBox">
+    Hết...
   </div>
 
 
@@ -155,22 +182,32 @@
        MUSIC
   ========================== -->
 
-  <!-- Nhạc 1: mèo → hoa → ảnh 1 → 2 → 3 → video -->
+  <!-- Nhạc 1:
+       mèo → hoa → ảnh 1 → 2 → 3 → video
+  -->
   <audio
     id="bgMusic"
     preload="auto"
   >
-    <source src="music.mp3" type="audio/mpeg">
+    <source
+      src="music.mp3"
+      type="audio/mpeg"
+    >
   </audio>
 
 
-  <!-- Nhạc 2: bắt đầu từ ảnh 4 → ảnh 5 -->
+  <!-- Nhạc 2:
+       bắt đầu từ ảnh 4 → ảnh 5
+  -->
   <audio
     id="bgMusic2"
     preload="auto"
     loop
   >
-    <source src="music2.mp3" type="audio/mpeg">
+    <source
+      src="music2.mp3"
+      type="audio/mpeg"
+    >
   </audio>
 
 

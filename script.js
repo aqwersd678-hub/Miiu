@@ -11,12 +11,12 @@ let videoFinished = false;
 
 
 /* =====================================================
-   IMAGE LIST
+   IMAGES
 ===================================================== */
 
 /*
-   Ảnh trước video:
-   1 → 2 → 3
+  Ảnh trước video:
+  1 → 2 → 3
 */
 
 const preVideoImages = [
@@ -27,8 +27,8 @@ const preVideoImages = [
 
 
 /*
-   Ảnh sau câu hỏi:
-   7 → 4 → 5 → 8
+  Ảnh sau câu hỏi:
+  7 → 4 → 5 → 8
 */
 
 const postQuestionImages = [
@@ -136,7 +136,9 @@ function preloadEverything() {
 
       setTimeout(function() {
 
-        loadingScreen.classList.add("hide");
+        loadingScreen.classList.add(
+          "hide"
+        );
 
       }, 500);
 
@@ -160,11 +162,10 @@ function startMusic1() {
 
   if (playPromise !== undefined) {
 
-    playPromise.catch(function(error) {
+    playPromise.catch(function() {
 
       console.log(
-        "Music 1 bị trình duyệt chặn.",
-        error
+        "Music 1 bị trình duyệt chặn."
       );
 
     });
@@ -189,11 +190,10 @@ function startMusic2() {
 
   if (playPromise !== undefined) {
 
-    playPromise.catch(function(error) {
+    playPromise.catch(function() {
 
       console.log(
-        "Music 2 bị trình duyệt chặn.",
-        error
+        "Music 2 bị trình duyệt chặn."
       );
 
     });
@@ -212,24 +212,25 @@ envelope.addEventListener(
   function() {
 
     /*
-       Lần 1:
-       mở mèo
+      Lần 1:
+      mở mèo
     */
 
     if (stage === 0) {
 
-      envelope.classList.add("open");
+      envelope.classList.add(
+        "open"
+      );
 
       stage = 1;
 
       return;
-
     }
 
 
     /*
-       Lần 2:
-       hoa + nhạc 1
+      Lần 2:
+      hoa + nhạc 1
     */
 
     if (stage === 1) {
@@ -239,18 +240,20 @@ envelope.addEventListener(
       envelope.style.pointerEvents =
         "none";
 
-      hint.classList.add("hide");
+      hint.classList.add(
+        "hide"
+      );
 
 
       /*
-         Nhạc 1 bắt đầu
+        Nhạc 1 bắt đầu
       */
 
       startMusic1();
 
 
       /*
-         Hoa
+        Hoa
       */
 
       startFlowerTransition();
@@ -269,7 +272,9 @@ function startFlowerTransition() {
 
   flowerLayer.innerHTML = "";
 
-  flowerLayer.classList.add("active");
+  flowerLayer.classList.add(
+    "active"
+  );
 
 
   const flowers = [
@@ -290,7 +295,9 @@ function startFlowerTransition() {
   ) {
 
     const flower =
-      document.createElement("div");
+      document.createElement(
+        "div"
+      );
 
     flower.className =
       "flower";
@@ -361,7 +368,7 @@ function startFlowerTransition() {
 
 
   /*
-     Hoa phủ màn hình
+    Hoa phủ màn hình
   */
 
   setTimeout(function() {
@@ -376,8 +383,8 @@ function startFlowerTransition() {
 
 
   /*
-     Sau hoa:
-     ảnh 1
+    Sau hoa:
+    ảnh 1
   */
 
   setTimeout(function() {
@@ -392,7 +399,9 @@ function startFlowerTransition() {
     flowerLayer.style.transition =
       "";
 
-    envelope.classList.add("hide");
+    envelope.classList.add(
+      "hide"
+    );
 
     showPreVideoImage(0);
 
@@ -405,14 +414,18 @@ function startFlowerTransition() {
    SHOW PRE VIDEO IMAGE
 ===================================================== */
 
-function showPreVideoImage(newIndex) {
+function showPreVideoImage(
+  newIndex
+) {
 
   index = newIndex;
 
   canNext = false;
 
 
-  viewer.classList.remove("show");
+  viewer.classList.remove(
+    "show"
+  );
 
   viewer.style.visibility =
     "hidden";
@@ -436,15 +449,21 @@ function showPreVideoImage(newIndex) {
       "visible";
 
 
-    requestAnimationFrame(function() {
+    requestAnimationFrame(
+      function() {
 
-      requestAnimationFrame(function() {
+        requestAnimationFrame(
+          function() {
 
-        viewer.classList.add("show");
+            viewer.classList.add(
+              "show"
+            );
 
-      });
+          }
+        );
 
-    });
+      }
+    );
 
 
     setTimeout(function() {
@@ -469,14 +488,18 @@ function showPreVideoImage(newIndex) {
    SHOW POST QUESTION IMAGE
 ===================================================== */
 
-function showPostQuestionImage(newIndex) {
+function showPostQuestionImage(
+  newIndex
+) {
 
   index = newIndex;
 
   canNext = false;
 
 
-  viewer.classList.remove("show");
+  viewer.classList.remove(
+    "show"
+  );
 
   viewer.style.visibility =
     "hidden";
@@ -500,15 +523,21 @@ function showPostQuestionImage(newIndex) {
       "visible";
 
 
-    requestAnimationFrame(function() {
+    requestAnimationFrame(
+      function() {
 
-      requestAnimationFrame(function() {
+        requestAnimationFrame(
+          function() {
 
-        viewer.classList.add("show");
+            viewer.classList.add(
+              "show"
+            );
 
-      });
+          }
+        );
 
-    });
+      }
+    );
 
 
     setTimeout(function() {
@@ -528,7 +557,7 @@ function showPostQuestionImage(newIndex) {
 
 
   /*
-     Nếu là ảnh 7
+    Nếu là ảnh 7
   */
 
   if (index === 0) {
@@ -595,7 +624,7 @@ viewer.addEventListener(
 
 
           /*
-             Ảnh 3 → video
+            Ảnh 3 → video
           */
 
           playVideo();
@@ -606,7 +635,6 @@ viewer.addEventListener(
 
 
       return;
-
     }
 
 
@@ -644,7 +672,6 @@ viewer.addEventListener(
 
 
       return;
-
     }
 
 
@@ -675,7 +702,6 @@ viewer.addEventListener(
 
 
       return;
-
     }
 
 
@@ -696,10 +722,6 @@ viewer.addEventListener(
       );
 
 
-      /*
-         Music 2 KHÔNG dừng
-      */
-
       setTimeout(function() {
 
         showPostQuestionImage(
@@ -710,7 +732,6 @@ viewer.addEventListener(
 
 
       return;
-
     }
 
 
@@ -732,7 +753,7 @@ viewer.addEventListener(
 
 
       /*
-         Music 2 VẪN TIẾP TỤC
+        Music 2 KHÔNG dừng
       */
 
       setTimeout(function() {
@@ -748,7 +769,6 @@ viewer.addEventListener(
 
 
       return;
-
     }
 
   }
@@ -769,10 +789,12 @@ function playVideo() {
 
 
   /*
-     Xóa timer cũ
+    Xóa timer cũ
   */
 
-  if (videoCheckTimer !== null) {
+  if (
+    videoCheckTimer !== null
+  ) {
 
     clearInterval(
       videoCheckTimer
@@ -784,7 +806,7 @@ function playVideo() {
 
 
   /*
-     Hiện video
+    Hiện video
   */
 
   videoViewer.style.display =
@@ -796,10 +818,8 @@ function playVideo() {
 
 
   /*
-     Reset video
+    Reset video
   */
-
-  videoViewer.pause();
 
   try {
 
@@ -813,109 +833,76 @@ function playVideo() {
 
 
   /*
-     Hiệu ứng hiện video
+    Hiệu ứng hiện video
   */
 
-  requestAnimationFrame(function() {
+  requestAnimationFrame(
+    function() {
 
-    videoViewer.classList.add(
-      "video-show"
-    );
+      videoViewer.classList.add(
+        "video-show"
+      );
 
-  });
+    }
+  );
 
 
   /*
-     Không có controls
+    Không có controls
   */
 
   videoViewer.controls = false;
 
 
   /*
-     Bắt buộc load lại metadata
-  */
-
-  videoViewer.load();
-
-
-  /*
-     Hàm bắt đầu phát
-  */
-
-  function startVideo() {
-
-    if (
-      stage !== 5 ||
-      videoFinished
-    ) {
-
-      return;
-
-    }
-
-
-    console.log(
-      "VIDEO READY - duration:",
-      videoViewer.duration
-    );
-
-
-    const playPromise =
-      videoViewer.play();
-
-
-    if (
-      playPromise !== undefined
-    ) {
-
-      playPromise
-        .then(function() {
-
-          console.log(
-            "VIDEO ĐANG PHÁT"
-          );
-
-          startVideoWatcher();
-
-        })
-        .catch(function(error) {
-
-          console.log(
-            "Không thể tự phát video:",
-            error
-          );
-
-        });
-
-    } else {
-
-      startVideoWatcher();
-
-    }
-
-  }
-
-
-  /*
-     Nếu metadata đã có
+    Đợi metadata
   */
 
   if (
     videoViewer.readyState >= 1
   ) {
 
-    startVideo();
+    startVideoWatcher();
 
   } else {
 
     videoViewer.addEventListener(
       "loadedmetadata",
-      startVideo,
+      startVideoWatcher,
       {
         once: true
       }
     );
+
+  }
+
+
+  /*
+    Phát video
+  */
+
+  const playPromise =
+    videoViewer.play();
+
+
+  if (
+    playPromise !== undefined
+  ) {
+
+    playPromise
+      .then(function() {
+
+        startVideoWatcher();
+
+      })
+      .catch(function(error) {
+
+        console.log(
+          "Không thể tự phát video:",
+          error
+        );
+
+      });
 
   }
 
@@ -928,154 +915,100 @@ function playVideo() {
 
 function startVideoWatcher() {
 
+  if (stage !== 5) {
+    return;
+  }
+
+
+  /*
+    Nếu đã có timer
+    thì không tạo thêm
+  */
+
   if (
     videoCheckTimer !== null
   ) {
 
-    clearInterval(
-      videoCheckTimer
-    );
+    return;
 
   }
 
 
   videoCheckTimer =
-    setInterval(function() {
+    setInterval(
+      function() {
 
-      /*
-         Không còn ở video
-      */
+        /*
+          Không còn ở video
+        */
 
-      if (
-        stage !== 5 ||
-        videoFinished
-      ) {
+        if (stage !== 5) {
 
-        clearInterval(
-          videoCheckTimer
-        );
+          clearInterval(
+            videoCheckTimer
+          );
 
-        videoCheckTimer = null;
+          videoCheckTimer = null;
 
-        return;
+          return;
 
-      }
+        }
 
 
-      const current =
-        videoViewer.currentTime;
+        const duration =
+          videoViewer.duration;
 
-      const duration =
-        videoViewer.duration;
-
-
-      /*
-         Debug
-      */
-
-      console.log(
-        "VIDEO:",
-        current,
-        "/",
-        duration
-      );
+        const currentTime =
+          videoViewer.currentTime;
 
 
-      /*
-         Chưa có duration
-      */
+        /*
+          Chưa biết duration
+        */
 
-      if (
-        !isFinite(duration) ||
-        duration <= 0
-      ) {
+        if (
+          !duration ||
+          !isFinite(duration)
+        ) {
 
-        return;
+          return;
 
-      }
+        }
 
 
-      /*
-         Video gần hết
-      */
+        /*
+          Video đã chạy gần hết
+        */
 
-      if (
-        current >=
-        duration - 0.15
-      ) {
+        if (
+          currentTime >=
+          duration - 0.25
+        ) {
 
-        goToQuestion();
+          goToQuestion();
 
-      }
+        }
 
-    }, 100);
+      },
+      100
+    );
 
 }
 
 
 /* =====================================================
-   VIDEO EVENTS
+   VIDEO END
 ===================================================== */
 
 /*
-   Cách 1:
-   Browser báo video đã kết thúc
+  Nếu browser phát event ended
 */
 
 videoViewer.addEventListener(
   "ended",
   function() {
 
-    console.log(
-      "VIDEO ENDED EVENT"
-    );
-
     goToQuestion();
-
-  }
-);
-
-
-/*
-   Cách 2:
-   Kiểm tra bằng timeupdate
-*/
-
-videoViewer.addEventListener(
-  "timeupdate",
-  function() {
-
-    if (
-      stage !== 5 ||
-      videoFinished
-    ) {
-
-      return;
-
-    }
-
-
-    const current =
-      videoViewer.currentTime;
-
-    const duration =
-      videoViewer.duration;
-
-
-    if (
-      isFinite(duration) &&
-      duration > 0 &&
-      current >=
-      duration - 0.15
-    ) {
-
-      console.log(
-        "VIDEO TIMEUPDATE ĐÃ TỚI CUỐI"
-      );
-
-      goToQuestion();
-
-    }
 
   }
 );
@@ -1088,26 +1021,18 @@ videoViewer.addEventListener(
 function goToQuestion() {
 
   /*
-     Chống chạy nhiều lần
+    Chống chạy nhiều lần
   */
 
   if (videoFinished) {
-
     return;
-
   }
-
 
   videoFinished = true;
 
 
-  console.log(
-    "CHUYỂN VIDEO → QUESTION"
-  );
-
-
   /*
-     Dừng timer
+    Dừng timer
   */
 
   if (
@@ -1124,7 +1049,7 @@ function goToQuestion() {
 
 
   /*
-     Dừng nhạc 1
+    Dừng nhạc 1
   */
 
   bgMusic.pause();
@@ -1133,7 +1058,7 @@ function goToQuestion() {
 
 
   /*
-     Fade
+    Fade
   */
 
   videoFade.classList.add(
@@ -1142,14 +1067,10 @@ function goToQuestion() {
 
 
   /*
-     Chuyển sang câu hỏi
+    Chuyển sang câu hỏi
   */
 
   setTimeout(function() {
-
-    /*
-       Dừng video
-    */
 
     videoViewer.pause();
 
@@ -1160,32 +1081,22 @@ function goToQuestion() {
     videoViewer.style.display =
       "none";
 
-
-    try {
-
-      videoViewer.currentTime = 0;
-
-    } catch (error) {
-
-      console.log(error);
-
-    }
+    videoViewer.currentTime = 0;
 
 
     /*
-       Hiện câu hỏi
+      Hiện câu hỏi
     */
 
     questionBox.classList.add(
       "show"
     );
 
-
     stage = 4;
 
 
     /*
-       Bỏ fade
+      Bỏ fade
     */
 
     setTimeout(function() {
@@ -1196,7 +1107,7 @@ function goToQuestion() {
 
     }, 400);
 
-  }, 500);
+  }, 700);
 
 }
 
@@ -1210,7 +1121,7 @@ yesBtn.addEventListener(
   function() {
 
     /*
-       Đóng câu hỏi
+      Đóng câu hỏi
     */
 
     questionBox.classList.remove(
@@ -1218,15 +1129,11 @@ yesBtn.addEventListener(
     );
 
 
-    /*
-       Dừng chuyển động nút NO
-    */
-
     stopNoButtonMovement();
 
 
     /*
-       Ảnh 7
+      Ảnh 7
     */
 
     setTimeout(function() {
@@ -1276,14 +1183,12 @@ function moveNoButton() {
 
   const x =
     padding +
-    Math.random() *
-    maxX;
+    Math.random() * maxX;
 
 
   const y =
     padding +
-    Math.random() *
-    maxY;
+    Math.random() * maxY;
 
 
   noBtn.style.position =
@@ -1302,8 +1207,8 @@ function moveNoButton() {
 
 
 /*
-   Desktop:
-   rê chuột tới → né
+  Desktop:
+  rê chuột tới → né
 */
 
 noBtn.addEventListener(
@@ -1317,8 +1222,8 @@ noBtn.addEventListener(
 
 
 /*
-   Mobile:
-   chạm → né
+  Mobile:
+  chạm → né
 */
 
 noBtn.addEventListener(
@@ -1337,8 +1242,8 @@ noBtn.addEventListener(
 
 
 /*
-   Nếu click được
-   → vẫn né
+  Nếu click được
+  → vẫn né
 */
 
 noBtn.addEventListener(
@@ -1379,8 +1284,8 @@ oneMoreBtn.addEventListener(
   function() {
 
     /*
-       Đóng:
-       "Còn 1 điều nữa..."
+      Đóng:
+      "Còn 1 điều nữa..."
     */
 
     oneMoreBox.classList.remove(
@@ -1389,7 +1294,7 @@ oneMoreBtn.addEventListener(
 
 
     /*
-       ẢNH 4 + NHẠC 2
+      ẢNH 4 + NHẠC 2
     */
 
     setTimeout(function() {
@@ -1400,8 +1305,8 @@ oneMoreBtn.addEventListener(
 
 
       /*
-         Music 2 bắt đầu
-         đúng lúc ảnh 4 hiện
+        Music 2 bắt đầu
+        đúng lúc ảnh 4 hiện
       */
 
       startMusic2();
