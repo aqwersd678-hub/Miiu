@@ -8,70 +8,11 @@ let index = 0;
 
 let canNext = false;
 
-let messageStep = 0;
 
-let noMoveTimer = null;
-
-
-/* =====================================================
-   ELEMENTS
-===================================================== */
-
-const loadingScreen =
-  document.getElementById("loadingScreen");
-
-const envelope =
-  document.getElementById("envelope");
-
-const hint =
-  document.querySelector(".hint");
-
-const flowerLayer =
-  document.getElementById("flowerLayer");
-
-const viewer =
-  document.getElementById("viewer");
-
-const imageCaption =
-  document.getElementById("imageCaption");
-
-const videoViewer =
-  document.getElementById("videoViewer");
-
-const videoFade =
-  document.getElementById("videoFade");
-
-const questionBox =
-  document.getElementById("questionBox");
-
-const questionCard =
-  document.querySelector(".question-card");
-
-const yesBtn =
-  document.getElementById("yesBtn");
-
-const noBtn =
-  document.getElementById("noBtn");
-
-const messageBox =
-  document.getElementById("messageBox");
-
-const messageText =
-  document.getElementById("messageText");
-
-const messageNext =
-  document.getElementById("messageNext");
-
-const bgMusic =
-  document.getElementById("bgMusic");
-
-const bgMusic2 =
-  document.getElementById("bgMusic2");
-
-
-/* =====================================================
-   IMAGES
-===================================================== */
+/*
+  Ảnh trước video:
+  1 → 2 → 3
+*/
 
 const preVideoImages = [
   "1.png",
@@ -79,11 +20,107 @@ const preVideoImages = [
   "3.png"
 ];
 
+
+/*
+  Ảnh sau câu hỏi:
+  7 → 4 → 5
+*/
+
 const postQuestionImages = [
   "7.png",
   "4.png",
   "5.png"
 ];
+
+
+/* =====================================================
+   ELEMENTS
+===================================================== */
+
+const loadingScreen =
+  document.getElementById(
+    "loadingScreen"
+  );
+
+const envelope =
+  document.getElementById(
+    "envelope"
+  );
+
+const hint =
+  document.querySelector(
+    ".hint"
+  );
+
+const flowerLayer =
+  document.getElementById(
+    "flowerLayer"
+  );
+
+const viewer =
+  document.getElementById(
+    "viewer"
+  );
+
+const videoViewer =
+  document.getElementById(
+    "videoViewer"
+  );
+
+const videoFade =
+  document.getElementById(
+    "videoFade"
+  );
+
+const questionBox =
+  document.getElementById(
+    "questionBox"
+  );
+
+const questionCard =
+  document.querySelector(
+    ".question-card"
+  );
+
+const yesBtn =
+  document.getElementById(
+    "yesBtn"
+  );
+
+const noBtn =
+  document.getElementById(
+    "noBtn"
+  );
+
+const image7Message =
+  document.getElementById(
+    "image7Message"
+  );
+
+const oneMoreBox =
+  document.getElementById(
+    "oneMoreBox"
+  );
+
+const oneMoreBtn =
+  document.getElementById(
+    "oneMoreBtn"
+  );
+
+const endBox =
+  document.getElementById(
+    "endBox"
+  );
+
+const bgMusic =
+  document.getElementById(
+    "bgMusic"
+  );
+
+const bgMusic2 =
+  document.getElementById(
+    "bgMusic2"
+  );
 
 
 /* =====================================================
@@ -98,22 +135,31 @@ function preloadEverything() {
     "6.png"
   ];
 
+
   const imagePromises =
-    allImages.map(function(src) {
+    allImages.map(
+      function(src) {
 
-      return new Promise(function(resolve) {
+        return new Promise(
+          function(resolve) {
 
-        const img = new Image();
+            const img =
+              new Image();
 
-        img.onload = resolve;
+            img.onload =
+              resolve;
 
-        img.onerror = resolve;
+            img.onerror =
+              resolve;
 
-        img.src = src;
+            img.src =
+              src;
 
-      });
+          }
+        );
 
-    });
+      }
+    );
 
 
   videoViewer.load();
@@ -124,33 +170,29 @@ function preloadEverything() {
 
 
   Promise.all(imagePromises)
-    .then(function() {
+    .then(
+      function() {
 
-      setTimeout(function() {
+        setTimeout(
+          function() {
 
-        loadingScreen.classList.add("hide");
+            loadingScreen
+              .classList
+              .add("hide");
 
-      }, 500);
+          },
+          500
+        );
 
-    });
+      }
+    );
 
 }
 
 
 /* =====================================================
-   MUSIC
+   MUSIC 1
 ===================================================== */
-
-/*
-  MUSIC 1:
-  bắt đầu ở click thứ 2 vào mèo
-  chạy:
-  hoa → ảnh 1 → ảnh 2 → ảnh 3 → video
-
-  Video kết thúc:
-  music 1 dừng hoàn toàn.
-*/
-
 
 function startMusic1() {
 
@@ -161,25 +203,28 @@ function startMusic1() {
   const playPromise =
     bgMusic.play();
 
-  if (playPromise !== undefined) {
+  if (
+    playPromise !== undefined
+  ) {
 
-    playPromise.catch(function() {
+    playPromise.catch(
+      function() {
 
-      console.log(
-        "Trình duyệt chặn autoplay music 1."
-      );
+        console.log(
+          "Music 1 bị trình duyệt chặn."
+        );
 
-    });
+      }
+    );
 
   }
 
 }
 
 
-/*
-  MUSIC 2:
-  chỉ bắt đầu khi ảnh 4 xuất hiện.
-*/
+/* =====================================================
+   MUSIC 2
+===================================================== */
 
 function startMusic2() {
 
@@ -190,15 +235,19 @@ function startMusic2() {
   const playPromise =
     bgMusic2.play();
 
-  if (playPromise !== undefined) {
+  if (
+    playPromise !== undefined
+  ) {
 
-    playPromise.catch(function() {
+    playPromise.catch(
+      function() {
 
-      console.log(
-        "Không thể phát music 2."
-      );
+        console.log(
+          "Music 2 bị trình duyệt chặn."
+        );
 
-    });
+      }
+    );
 
   }
 
@@ -220,7 +269,9 @@ envelope.addEventListener(
 
     if (stage === 0) {
 
-      envelope.classList.add("open");
+      envelope.classList.add(
+        "open"
+      );
 
       stage = 1;
 
@@ -230,19 +281,31 @@ envelope.addEventListener(
 
     /*
       Lần 2:
-      hoa xuất hiện
-      + bắt đầu nhạc 1
+      hoa + nhạc 1
     */
 
     if (stage === 1) {
 
       stage = 2;
 
-      envelope.style.pointerEvents = "none";
+      envelope.style.pointerEvents =
+        "none";
 
-      hint.classList.add("hide");
+      hint.classList.add(
+        "hide"
+      );
+
+
+      /*
+        Nhạc 1 bắt đầu
+      */
 
       startMusic1();
+
+
+      /*
+        Hoa
+      */
 
       startFlowerTransition();
 
@@ -260,7 +323,9 @@ function startFlowerTransition() {
 
   flowerLayer.innerHTML = "";
 
-  flowerLayer.classList.add("active");
+  flowerLayer.classList.add(
+    "active"
+  );
 
 
   const flowers = [
@@ -281,9 +346,13 @@ function startFlowerTransition() {
   ) {
 
     const flower =
-      document.createElement("div");
+      document.createElement(
+        "div"
+      );
 
-    flower.className = "flower";
+    flower.className =
+      "flower";
+
 
     flower.innerText =
       flowers[
@@ -295,12 +364,17 @@ function startFlowerTransition() {
 
 
     const x =
-      (Math.random() - .5) *
+      (
+        Math.random() - .5
+      ) *
       window.innerWidth *
       1.4;
 
+
     const y =
-      (Math.random() - .5) *
+      (
+        Math.random() - .5
+      ) *
       window.innerHeight *
       1.4;
 
@@ -308,6 +382,7 @@ function startFlowerTransition() {
     const size =
       18 +
       Math.random() * 30;
+
 
     const rotation =
       -180 +
@@ -336,7 +411,8 @@ function startFlowerTransition() {
 
 
     flower.style.animationDelay =
-      Math.random() * .35 + "s";
+      Math.random() * .35 +
+      "s";
 
 
     flowerLayer.appendChild(
@@ -350,67 +426,86 @@ function startFlowerTransition() {
     Hoa phủ màn hình
   */
 
-  setTimeout(function() {
+  setTimeout(
+    function() {
 
-    flowerLayer.style.transition =
-      "opacity .8s ease";
+      flowerLayer.style.transition =
+        "opacity .8s ease";
 
-    flowerLayer.style.opacity = "0";
+      flowerLayer.style.opacity =
+        "0";
 
-  }, 2300);
+    },
+    2300
+  );
 
 
   /*
-    Sau khi hoa biến mất:
+    Sau hoa:
     ảnh 1
   */
 
-  setTimeout(function() {
+  setTimeout(
+    function() {
 
-    flowerLayer.classList.remove(
-      "active"
-    );
+      flowerLayer.classList.remove(
+        "active"
+      );
 
-    flowerLayer.style.opacity = "";
+      flowerLayer.style.opacity =
+        "";
 
-    flowerLayer.style.transition = "";
+      flowerLayer.style.transition =
+        "";
 
-    envelope.classList.add("hide");
+      envelope.classList.add(
+        "hide"
+      );
 
-    showPreVideoImage(0);
+      showPreVideoImage(0);
 
-  }, 3200);
+    },
+    3200
+  );
 
 }
 
 
 /* =====================================================
-   PRE VIDEO IMAGE
+   SHOW PRE VIDEO IMAGE
 ===================================================== */
 
-function showPreVideoImage(newIndex) {
+function showPreVideoImage(
+  newIndex
+) {
 
   index = newIndex;
 
   canNext = false;
 
-  imageCaption.classList.remove("show");
 
-  viewer.classList.remove("show");
+  viewer.classList.remove(
+    "show"
+  );
 
-  viewer.style.visibility = "hidden";
+  viewer.style.visibility =
+    "hidden";
 
-  viewer.style.display = "block";
+  viewer.style.display =
+    "block";
 
 
   viewer.onload =
     function() {
 
-      viewer.style.left = "50%";
+      viewer.style.left =
+        "50%";
 
-      viewer.style.top = "50%";
+      viewer.style.top =
+        "50%";
 
-      viewer.style.filter = "none";
+      viewer.style.filter =
+        "none";
 
       viewer.style.visibility =
         "visible";
@@ -450,11 +545,12 @@ function showPreVideoImage(newIndex) {
 
 
   stage = 3;
+
 }
 
 
 /* =====================================================
-   POST QUESTION IMAGE
+   SHOW POST QUESTION IMAGE
 ===================================================== */
 
 function showPostQuestionImage(
@@ -465,9 +561,6 @@ function showPostQuestionImage(
 
   canNext = false;
 
-  imageCaption.classList.remove(
-    "show"
-  );
 
   viewer.classList.remove(
     "show"
@@ -483,11 +576,14 @@ function showPostQuestionImage(
   viewer.onload =
     function() {
 
-      viewer.style.left = "50%";
+      viewer.style.left =
+        "50%";
 
-      viewer.style.top = "50%";
+      viewer.style.top =
+        "50%";
 
-      viewer.style.filter = "none";
+      viewer.style.filter =
+        "none";
 
       viewer.style.visibility =
         "visible";
@@ -527,6 +623,28 @@ function showPostQuestionImage(
 
 
   stage = 6;
+
+
+  /*
+    Nếu đây là ảnh 7:
+    hiện "Cảm ơn công chúa..."
+    cùng lúc với ảnh
+  */
+
+  if (index === 0) {
+
+    image7Message.classList.add(
+      "show"
+    );
+
+  } else {
+
+    image7Message.classList.remove(
+      "show"
+    );
+
+  }
+
 }
 
 
@@ -543,9 +661,9 @@ viewer.addEventListener(
     }
 
 
-    /*
-      ẢNH 1 → 2 → 3
-    */
+    /* ===============================================
+       1 → 2 → 3
+    =============================================== */
 
     if (stage === 3) {
 
@@ -555,14 +673,12 @@ viewer.addEventListener(
         "show"
       );
 
-      imageCaption.classList.remove(
-        "show"
-      );
 
       setTimeout(
         function() {
 
           index++;
+
 
           if (
             index <
@@ -575,13 +691,14 @@ viewer.addEventListener(
 
           } else {
 
-            /*
-              Đã qua ảnh 3
-              → video
-            */
-
             viewer.style.display =
               "none";
+
+
+            /*
+              Ảnh 3 xong
+              → video
+            */
 
             playVideo();
 
@@ -591,14 +708,15 @@ viewer.addEventListener(
         420
       );
 
+
       return;
     }
 
 
-    /*
-      SAU YES:
-      ẢNH 7 → message
-    */
+    /* ===============================================
+       ẢNH 7
+       → hiện "Còn 1 điều nữa..."
+    =============================================== */
 
     if (
       stage === 6 &&
@@ -607,9 +725,15 @@ viewer.addEventListener(
 
       canNext = false;
 
+
       viewer.classList.remove(
         "show"
       );
+
+      image7Message.classList.remove(
+        "show"
+      );
+
 
       setTimeout(
         function() {
@@ -617,19 +741,29 @@ viewer.addEventListener(
           viewer.style.display =
             "none";
 
-          showMessageStep1();
+
+          /*
+            Hiện:
+            Còn 1 điều nữa...
+          */
+
+          oneMoreBox.classList.add(
+            "show"
+          );
 
         },
-        420
+        500
       );
+
 
       return;
     }
 
 
-    /*
-      ẢNH 4 → ẢNH 5
-    */
+    /* ===============================================
+       ẢNH 4
+       → ẢNH 5
+    =============================================== */
 
     if (
       stage === 6 &&
@@ -642,6 +776,7 @@ viewer.addEventListener(
         "show"
       );
 
+
       setTimeout(
         function() {
 
@@ -653,14 +788,15 @@ viewer.addEventListener(
         420
       );
 
+
       return;
     }
 
 
-    /*
-      ẢNH 5
-      → kết thúc
-    */
+    /* ===============================================
+       ẢNH 5
+       → HẾT...
+    =============================================== */
 
     if (
       stage === 6 &&
@@ -669,10 +805,33 @@ viewer.addEventListener(
 
       canNext = false;
 
+      viewer.classList.remove(
+        "show"
+      );
+
+
       /*
-        Giữ ảnh 5 trên màn hình.
-        Nhạc 2 vẫn tiếp tục.
+        Dừng nhạc 2 khi kết thúc
       */
+
+      bgMusic2.pause();
+
+
+      setTimeout(
+        function() {
+
+          viewer.style.display =
+            "none";
+
+
+          endBox.classList.add(
+            "show"
+          );
+
+        },
+        600
+      );
+
 
       return;
     }
@@ -692,11 +851,6 @@ function playVideo() {
   canNext = false;
 
 
-  /*
-    Đảm bảo nhạc 1 đang chạy
-    thì vẫn chạy trong video.
-  */
-
   videoViewer.currentTime = 0;
 
   videoViewer.style.display =
@@ -714,8 +868,16 @@ function playVideo() {
   );
 
 
+  /*
+    Không cho điều khiển video
+  */
+
+  videoViewer.controls = false;
+
+
   const playPromise =
     videoViewer.play();
+
 
   if (
     playPromise !== undefined
@@ -736,8 +898,7 @@ function playVideo() {
 
 
   /*
-    Thử fullscreen trên thiết bị
-    hỗ trợ.
+    Fullscreen nếu được phép
   */
 
   setTimeout(
@@ -763,6 +924,35 @@ function playVideo() {
 
 
 /* =====================================================
+   VIDEO - KHÔNG CHO CLICK PAUSE
+===================================================== */
+
+videoViewer.addEventListener(
+  "click",
+  function(event) {
+
+    event.preventDefault();
+
+  }
+);
+
+
+/*
+  Chặn các thao tác chuột/touch
+  có thể làm video pause
+*/
+
+videoViewer.addEventListener(
+  "pointerdown",
+  function(event) {
+
+    event.preventDefault();
+
+  }
+);
+
+
+/* =====================================================
    VIDEO END
 ===================================================== */
 
@@ -771,7 +961,7 @@ videoViewer.addEventListener(
   function() {
 
     /*
-      NHẠC 1 DỪNG NGAY
+      NHẠC 1 DỪNG
     */
 
     bgMusic.pause();
@@ -780,7 +970,7 @@ videoViewer.addEventListener(
 
 
     /*
-      Fade video
+      Fade
     */
 
     videoFade.classList.add(
@@ -805,12 +995,18 @@ videoViewer.addEventListener(
     }
 
 
+    /*
+      Sau khi video biến mất
+      → câu hỏi
+    */
+
     setTimeout(
       function() {
 
         videoViewer.pause();
 
-        videoViewer.currentTime = 0;
+        videoViewer.currentTime =
+          0;
 
         videoViewer.classList.remove(
           "video-show"
@@ -821,7 +1017,7 @@ videoViewer.addEventListener(
 
 
         /*
-          Hiện câu hỏi
+          Câu hỏi xuất hiện
         */
 
         questionBox.classList.add(
@@ -851,7 +1047,7 @@ videoViewer.addEventListener(
 
 
 /* =====================================================
-   YES BUTTON
+   YES
 ===================================================== */
 
 yesBtn.addEventListener(
@@ -867,15 +1063,11 @@ yesBtn.addEventListener(
     );
 
 
-    /*
-      Dừng việc chạy nút NON'T
-    */
-
     stopNoButtonMovement();
 
 
     /*
-      Hiện ảnh 7
+      Ảnh 7
     */
 
     setTimeout(
@@ -886,7 +1078,7 @@ yesBtn.addEventListener(
         );
 
       },
-      650
+      600
     );
 
   }
@@ -902,14 +1094,10 @@ function moveNoButton() {
   const card =
     questionCard.getBoundingClientRect();
 
+
   const button =
     noBtn.getBoundingClientRect();
 
-
-  /*
-    Khoảng cách an toàn
-    để nút không bay khỏi màn hình
-  */
 
   const padding = 15;
 
@@ -921,6 +1109,7 @@ function moveNoButton() {
       button.width -
       padding * 2
     );
+
 
   const maxY =
     Math.max(
@@ -935,33 +1124,33 @@ function moveNoButton() {
     padding +
     Math.random() * maxX;
 
+
   const y =
     padding +
     Math.random() * maxY;
 
 
-  /*
-    Đổi sang absolute
-    để nó chạy trong card
-  */
-
   noBtn.style.position =
     "absolute";
+
 
   noBtn.style.left =
     x + "px";
 
+
   noBtn.style.top =
     y + "px";
 
+
   noBtn.style.transform =
     "none";
+
 }
 
 
 /*
-  Nếu rê chuột đến:
-  nó cũng né luôn :))
+  Rê chuột tới:
+  né
 */
 
 noBtn.addEventListener(
@@ -976,7 +1165,8 @@ noBtn.addEventListener(
 
 /*
   Mobile:
-  chạm vào là nó chạy.
+  chạm vào:
+  né
 */
 
 noBtn.addEventListener(
@@ -995,8 +1185,8 @@ noBtn.addEventListener(
 
 
 /*
-  Nếu bằng cách nào đó vẫn click được:
-  nó tiếp tục chạy.
+  Nếu click được:
+  vẫn né
 */
 
 noBtn.addEventListener(
@@ -1012,100 +1202,7 @@ noBtn.addEventListener(
 
 
 /* =====================================================
-   MESSAGE
-===================================================== */
-
-function showMessageStep1() {
-
-  messageStep = 1;
-
-  messageText.innerText =
-    "Cảm ơn công chúa đã tham gia 💗";
-
-  messageNext.innerText =
-    "Tiếp tục ✨";
-
-  messageBox.classList.add(
-    "show"
-  );
-
-}
-
-
-/*
-  Sau khi bấm:
-  "Cảm ơn công chúa đã tham gia"
-  → hiện:
-  "Còn 1 điều nữa..."
-*/
-
-messageNext.addEventListener(
-  "click",
-  function() {
-
-    if (messageStep === 1) {
-
-      messageStep = 2;
-
-      messageText.innerText =
-        "Còn 1 điều nữa...";
-
-      messageNext.innerText =
-        "Xem tiếp 💗";
-
-      return;
-    }
-
-
-    /*
-      Sau "Còn 1 điều nữa..."
-      → ảnh 4
-      → NHẠC 2 BẮT ĐẦU
-    */
-
-    if (messageStep === 2) {
-
-      messageBox.classList.remove(
-        "show"
-      );
-
-
-      setTimeout(
-        function() {
-
-          /*
-            Ảnh 4 là index 1
-            trong postQuestionImages
-
-            [0] = 7.png
-            [1] = 4.png
-            [2] = 5.png
-          */
-
-          showPostQuestionImage(
-            1
-          );
-
-
-          /*
-            NHẠC 2 CHỈ BẮT ĐẦU
-            TẠI ĐÂY
-          */
-
-          startMusic2();
-
-        },
-        600
-      );
-
-    }
-
-  }
-);
-
-
-/* =====================================================
-   STOP NO BUTTON MOVEMENT
+   RESET NO BUTTON
 ===================================================== */
 
 function stopNoButtonMovement() {
@@ -1119,6 +1216,52 @@ function stopNoButtonMovement() {
   noBtn.style.transform = "";
 
 }
+
+
+/* =====================================================
+   ONE MORE
+===================================================== */
+
+oneMoreBtn.addEventListener(
+  "click",
+  function() {
+
+    /*
+      Đóng màn:
+      "Còn 1 điều nữa..."
+    */
+
+    oneMoreBox.classList.remove(
+      "show"
+    );
+
+
+    /*
+      Sau đó:
+      ẢNH 4 + NHẠC 2
+    */
+
+    setTimeout(
+      function() {
+
+        showPostQuestionImage(
+          1
+        );
+
+
+        /*
+          NHẠC 2 BẮT ĐẦU
+          ĐÚNG LÚC ẢNH 4 HIỆN
+        */
+
+        startMusic2();
+
+      },
+      600
+    );
+
+  }
+);
 
 
 /* =====================================================
