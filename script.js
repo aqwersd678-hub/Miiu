@@ -1,1052 +1,1340 @@
-/* =====================================================
-   STATE
-===================================================== */
-
-let stage = 0;
-let index = 0;
-let canNext = false;
-
-let videoFinished = false;
-let videoWatcher = null;
+/* =========================================================
+   FOR MY PRINCESS
+   COMPLETE SCRIPT
+========================================================= */
 
 
-/* =====================================================
-   IMAGES
-===================================================== */
+/* =========================================================
+   WAIT FOR HTML
+========================================================= */
 
-const preVideoImages = [
-  "1.png",
-  "2.png",
-  "3.png"
-];
+document.addEventListener("DOMContentLoaded", function () {
 
-const postQuestionImages = [
-  "7.png",
-  "4.png",
-  "5.png",
-  "8.png"
-];
+  console.log("✅ script.js đã chạy");
 
 
-/* =====================================================
-   ELEMENTS
-===================================================== */
+  /* =======================================================
+     ELEMENTS
+  ======================================================= */
 
-const loadingScreen =
-  document.getElementById("loadingScreen");
+  const loadingScreen =
+    document.getElementById("loadingScreen");
 
-const envelope =
-  document.getElementById("envelope");
+  const envelope =
+    document.getElementById("envelope");
 
-const hint =
-  document.querySelector(".hint");
+  const hint =
+    document.querySelector(".hint");
 
-const flowerLayer =
-  document.getElementById("flowerLayer");
+  const flowerLayer =
+    document.getElementById("flowerLayer");
 
-const viewer =
-  document.getElementById("viewer");
+  const viewer =
+    document.getElementById("viewer");
 
-const videoViewer =
-  document.getElementById("videoViewer");
+  const videoViewer =
+    document.getElementById("videoViewer");
 
-const videoFade =
-  document.getElementById("videoFade");
+  const videoFade =
+    document.getElementById("videoFade");
 
-const questionBox =
-  document.getElementById("questionBox");
+  const questionBox =
+    document.getElementById("questionBox");
 
-const questionCard =
-  document.querySelector(".question-card");
+  const questionCard =
+    document.querySelector(".question-card");
 
-const yesBtn =
-  document.getElementById("yesBtn");
+  const yesBtn =
+    document.getElementById("yesBtn");
 
-const noBtn =
-  document.getElementById("noBtn");
+  const noBtn =
+    document.getElementById("noBtn");
 
-const image7Message =
-  document.getElementById("image7Message");
+  const image7Message =
+    document.getElementById("image7Message");
 
-const oneMoreBox =
-  document.getElementById("oneMoreBox");
+  const oneMoreBox =
+    document.getElementById("oneMoreBox");
 
-const oneMoreBtn =
-  document.getElementById("oneMoreBtn");
+  const oneMoreBtn =
+    document.getElementById("oneMoreBtn");
 
-const endBox =
-  document.getElementById("endBox");
+  const endBox =
+    document.getElementById("endBox");
 
-const bgMusic =
-  document.getElementById("bgMusic");
+  const bgMusic =
+    document.getElementById("bgMusic");
 
-const bgMusic2 =
-  document.getElementById("bgMusic2");
+  const bgMusic2 =
+    document.getElementById("bgMusic2");
 
 
-/* =====================================================
-   PRELOAD
-===================================================== */
+  /* =======================================================
+     CHECK ELEMENTS
+  ======================================================= */
 
-function preloadEverything() {
-
-  const images = [
-    ...preVideoImages,
-    ...postQuestionImages,
-    "6.png"
-  ];
-
-  let loaded = 0;
-
-  if (images.length === 0) {
-    finishLoading();
+  if (!loadingScreen) {
+    console.error("❌ Không tìm thấy #loadingScreen");
     return;
   }
 
-  images.forEach(function(src) {
+  if (!envelope) {
+    console.error("❌ Không tìm thấy #envelope");
+    return;
+  }
+
+  if (!viewer) {
+    console.error("❌ Không tìm thấy #viewer");
+    return;
+  }
+
+  if (!videoViewer) {
+    console.error("❌ Không tìm thấy #videoViewer");
+    return;
+  }
+
+
+  /* =======================================================
+     STATE
+  ======================================================= */
+
+  let stage = 0;
+
+  let index = 0;
+
+  let canNext = false;
+
+  let videoFinished = false;
+
+  let videoWatcher = null;
+
+
+  /*
+     STAGE
+
+     0 = ban đầu
+     1 = mèo đã mở
+     2 = hoa
+     3 = ảnh 1-2-3
+     4 = câu hỏi
+     5 = video
+     6 = ảnh 7-4-5-8
+  */
+
+
+  /* =======================================================
+     IMAGES
+  ======================================================= */
+
+  const preVideoImages = [
+    "./1.png",
+    "./2.png",
+    "./3.png"
+  ];
+
+
+  const postQuestionImages = [
+    "./7.png",
+    "./4.png",
+    "./5.png",
+    "./8.png"
+  ];
+
+
+  /* =======================================================
+     LOADING
+  ======================================================= */
+
+  /*
+     Không chờ preload nữa.
+
+     JS chạy → chờ 1 giây → tắt loading.
+  */
+
+  setTimeout(function () {
+
+    console.log("✅ Loading hoàn tất");
+
+    loadingScreen.classList.add("hide");
+
+    /*
+       Đảm bảo trong trường hợp CSS .hide
+       không hoạt động.
+    */
+
+    setTimeout(function () {
+
+      loadingScreen.style.opacity = "0";
+      loadingScreen.style.pointerEvents = "none";
+
+    }, 700);
+
+  }, 1000);
+
+
+  /* =======================================================
+     PRELOAD ẢNH
+  ======================================================= */
+
+  const preloadList = [
+    ...preVideoImages,
+    ...postQuestionImages,
+    "./6.png"
+  ];
+
+
+  preloadList.forEach(function (src) {
 
     const img = new Image();
-
-    img.onload = imageLoaded;
-    img.onerror = imageLoaded;
 
     img.src = src;
 
   });
 
+
+  /* =======================================================
+     PRELOAD VIDEO
+  ======================================================= */
+
   videoViewer.load();
 
-  bgMusic.load();
-  bgMusic2.load();
 
+  /* =======================================================
+     MUSIC 1
+  ======================================================= */
 
-  function imageLoaded() {
+  function startMusic1() {
 
-    loaded++;
+    console.log("🎵 Bắt đầu music.mp3");
 
-    if (loaded >= images.length) {
-      finishLoading();
-    }
+    bgMusic.volume = 0.65;
 
-  }
+    try {
+      bgMusic.currentTime = 0;
+    } catch (error) {}
 
-}
+    const promise =
+      bgMusic.play();
 
+    if (promise) {
 
-/* =====================================================
-   LOADING END
-===================================================== */
+      promise.catch(function (error) {
 
-function finishLoading() {
-
-  setTimeout(function() {
-
-    if (loadingScreen) {
-      loadingScreen.classList.add("hide");
-    }
-
-  }, 500);
-
-}
-
-
-/* =====================================================
-   MUSIC 1
-===================================================== */
-
-function startMusic1() {
-
-  bgMusic.volume = 0.65;
-
-  try {
-    bgMusic.currentTime = 0;
-  } catch (e) {}
-
-  const promise = bgMusic.play();
-
-  if (promise) {
-
-    promise.catch(function(error) {
-
-      console.log(
-        "music.mp3 không tự phát được:",
-        error
-      );
-
-    });
-
-  }
-
-}
-
-
-function stopMusic1() {
-
-  bgMusic.pause();
-
-  try {
-    bgMusic.currentTime = 0;
-  } catch (e) {}
-
-}
-
-
-/* =====================================================
-   MUSIC 2
-===================================================== */
-
-function startMusic2() {
-
-  bgMusic2.volume = 0.65;
-
-  const promise = bgMusic2.play();
-
-  if (promise) {
-
-    promise.catch(function(error) {
-
-      console.log(
-        "music2.mp3 không tự phát được:",
-        error
-      );
-
-    });
-
-  }
-
-}
-
-
-/* =====================================================
-   CAT
-===================================================== */
-
-envelope.addEventListener(
-  "click",
-  function() {
-
-
-    /* ---------------------------------------------
-       LẦN 1
-       MỞ MÈO
-    --------------------------------------------- */
-
-    if (stage === 0) {
-
-      envelope.classList.add("open");
-
-      stage = 1;
-
-      return;
-
-    }
-
-
-    /* ---------------------------------------------
-       LẦN 2
-       HOA + NHẠC
-    --------------------------------------------- */
-
-    if (stage === 1) {
-
-      stage = 2;
-
-      envelope.style.pointerEvents = "none";
-
-      hint.classList.add("hide");
-
-      startMusic1();
-
-      startFlowerTransition();
-
-    }
-
-  }
-);
-
-
-/* =====================================================
-   FLOWER TRANSITION
-===================================================== */
-
-function startFlowerTransition() {
-
-  flowerLayer.innerHTML = "";
-
-  flowerLayer.classList.add("active");
-
-
-  const flowers = [
-    "🌸",
-    "🌷",
-    "🌺",
-    "🌹",
-    "💐",
-    "🌼"
-  ];
-
-
-  for (let i = 0; i < 75; i++) {
-
-    const flower =
-      document.createElement("div");
-
-    flower.className = "flower";
-
-    flower.innerText =
-      flowers[
-        Math.floor(
-          Math.random() * flowers.length
-        )
-      ];
-
-
-    const x =
-      (Math.random() - 0.5) *
-      window.innerWidth *
-      1.4;
-
-    const y =
-      (Math.random() - 0.5) *
-      window.innerHeight *
-      1.4;
-
-    const size =
-      18 + Math.random() * 30;
-
-    const rotation =
-      -180 + Math.random() * 360;
-
-
-    flower.style.setProperty(
-      "--x",
-      x + "px"
-    );
-
-    flower.style.setProperty(
-      "--y",
-      y + "px"
-    );
-
-    flower.style.setProperty(
-      "--size",
-      size + "px"
-    );
-
-    flower.style.setProperty(
-      "--r",
-      rotation + "deg"
-    );
-
-    flower.style.animationDelay =
-      Math.random() * 0.35 + "s";
-
-
-    flowerLayer.appendChild(flower);
-
-  }
-
-
-  /* ---------------------------------------------
-     FADE HOA
-  --------------------------------------------- */
-
-  setTimeout(function() {
-
-    flowerLayer.style.transition =
-      "opacity .8s ease";
-
-    flowerLayer.style.opacity = "0";
-
-  }, 2300);
-
-
-  /* ---------------------------------------------
-     HIỆN ẢNH 1
-  --------------------------------------------- */
-
-  setTimeout(function() {
-
-    flowerLayer.classList.remove("active");
-
-    flowerLayer.style.opacity = "";
-    flowerLayer.style.transition = "";
-
-    envelope.classList.add("hide");
-
-    showPreVideoImage(0);
-
-  }, 3200);
-
-}
-
-
-/* =====================================================
-   SHOW PRE-VIDEO IMAGE
-===================================================== */
-
-function showPreVideoImage(newIndex) {
-
-  index = newIndex;
-
-  canNext = false;
-
-  viewer.classList.remove("show");
-
-  viewer.style.visibility = "hidden";
-  viewer.style.display = "block";
-
-
-  viewer.onload = function() {
-
-    viewer.style.visibility = "visible";
-
-    requestAnimationFrame(function() {
-
-      requestAnimationFrame(function() {
-
-        viewer.classList.add("show");
+        console.log(
+          "⚠️ Không thể tự phát music.mp3:",
+          error
+        );
 
       });
 
-    });
-
-
-    setTimeout(function() {
-
-      canNext = true;
-
-    }, 450);
-
-  };
-
-
-  viewer.src =
-    preVideoImages[index];
-
-  stage = 3;
-
-}
-
-
-/* =====================================================
-   SHOW POST-QUESTION IMAGE
-===================================================== */
-
-function showPostQuestionImage(newIndex) {
-
-  index = newIndex;
-
-  canNext = false;
-
-  viewer.classList.remove("show");
-
-  viewer.style.visibility = "hidden";
-  viewer.style.display = "block";
-
-
-  viewer.onload = function() {
-
-    viewer.style.visibility = "visible";
-
-    requestAnimationFrame(function() {
-
-      requestAnimationFrame(function() {
-
-        viewer.classList.add("show");
-
-      });
-
-    });
-
-
-    setTimeout(function() {
-
-      canNext = true;
-
-    }, 450);
-
-  };
-
-
-  viewer.src =
-    postQuestionImages[index];
-
-
-  stage = 6;
-
-
-  if (index === 0) {
-
-    image7Message.classList.add("show");
-
-  } else {
-
-    image7Message.classList.remove("show");
+    }
 
   }
 
-}
+
+  function stopMusic1() {
+
+    console.log("⏹ Dừng music.mp3");
+
+    bgMusic.pause();
+
+    try {
+      bgMusic.currentTime = 0;
+    } catch (error) {}
+
+  }
 
 
-/* =====================================================
-   IMAGE CLICK
-===================================================== */
+  /* =======================================================
+     MUSIC 2
+  ======================================================= */
 
-viewer.addEventListener(
-  "click",
-  function() {
+  function startMusic2() {
 
+    console.log("🎵 Bắt đầu music2.mp3");
 
-    if (!canNext) {
-      return;
+    bgMusic2.volume = 0.65;
+
+    const promise =
+      bgMusic2.play();
+
+    if (promise) {
+
+      promise.catch(function (error) {
+
+        console.log(
+          "⚠️ Không thể phát music2.mp3:",
+          error
+        );
+
+      });
+
     }
 
-
-    /* ---------------------------------------------
-       1 → 2 → 3 → VIDEO
-    --------------------------------------------- */
-
-    if (stage === 3) {
-
-      canNext = false;
-
-      viewer.classList.remove("show");
+  }
 
 
-      setTimeout(function() {
+  /* =======================================================
+     CAT
+  ======================================================= */
 
-        index++;
+  envelope.addEventListener(
+    "click",
+    function () {
+
+      console.log(
+        "🐱 Click mèo - stage:",
+        stage
+      );
 
 
-        if (
-          index <
-          preVideoImages.length
-        ) {
+      /* ---------------------------------------------------
+         LẦN 1
+         MỞ MÈO
+      --------------------------------------------------- */
 
-          showPreVideoImage(index);
+      if (stage === 0) {
 
-        } else {
+        envelope.classList.add("open");
 
-          viewer.style.display = "none";
+        stage = 1;
 
-          playVideo();
+        return;
+      }
 
+
+      /* ---------------------------------------------------
+         LẦN 2
+         HOA + MUSIC
+      --------------------------------------------------- */
+
+      if (stage === 1) {
+
+        stage = 2;
+
+        envelope.style.pointerEvents =
+          "none";
+
+        if (hint) {
+          hint.classList.add("hide");
         }
 
-      }, 420);
+        startMusic1();
+
+        startFlowerTransition();
+
+      }
+
+    }
+  );
 
 
-      return;
+  /* =======================================================
+     FLOWER TRANSITION
+  ======================================================= */
+
+  function startFlowerTransition() {
+
+    console.log("🌸 Flower transition");
+
+    flowerLayer.innerHTML = "";
+
+    flowerLayer.classList.add("active");
+
+
+    const flowers = [
+      "🌸",
+      "🌷",
+      "🌺",
+      "🌹",
+      "💐",
+      "🌼"
+    ];
+
+
+    for (
+      let i = 0;
+      i < 75;
+      i++
+    ) {
+
+      const flower =
+        document.createElement("div");
+
+
+      flower.className =
+        "flower";
+
+
+      flower.innerText =
+        flowers[
+          Math.floor(
+            Math.random() *
+            flowers.length
+          )
+        ];
+
+
+      const x =
+        (Math.random() - 0.5) *
+        window.innerWidth *
+        1.5;
+
+
+      const y =
+        (Math.random() - 0.5) *
+        window.innerHeight *
+        1.5;
+
+
+      const size =
+        18 +
+        Math.random() * 30;
+
+
+      const rotation =
+        -180 +
+        Math.random() * 360;
+
+
+      flower.style.setProperty(
+        "--x",
+        x + "px"
+      );
+
+
+      flower.style.setProperty(
+        "--y",
+        y + "px"
+      );
+
+
+      flower.style.setProperty(
+        "--size",
+        size + "px"
+      );
+
+
+      flower.style.setProperty(
+        "--r",
+        rotation + "deg"
+      );
+
+
+      flower.style.animationDelay =
+        Math.random() *
+        0.35 +
+        "s";
+
+
+      flowerLayer.appendChild(
+        flower
+      );
 
     }
 
 
-    /* ---------------------------------------------
-       IMAGE 7 → ONE MORE
-    --------------------------------------------- */
+    /* ---------------------------------------------------
+       FADE HOA
+    --------------------------------------------------- */
 
-    if (
-      stage === 6 &&
-      index === 0
-    ) {
+    setTimeout(function () {
 
-      canNext = false;
+      flowerLayer.style.transition =
+        "opacity 0.8s ease";
 
-      viewer.classList.remove("show");
+      flowerLayer.style.opacity =
+        "0";
 
-      image7Message.classList.remove("show");
+    }, 2200);
 
 
-      setTimeout(function() {
+    /* ---------------------------------------------------
+       ẨN HOA + HIỆN ẢNH 1
+    --------------------------------------------------- */
 
-        viewer.style.display = "none";
+    setTimeout(function () {
 
-        oneMoreBox.classList.add("show");
+      flowerLayer.classList.remove(
+        "active"
+      );
+
+      flowerLayer.style.opacity =
+        "";
+
+      flowerLayer.style.transition =
+        "";
+
+      envelope.classList.add(
+        "hide"
+      );
+
+      showPreVideoImage(0);
+
+    }, 3100);
+
+  }
+
+
+  /* =======================================================
+     SHOW ẢNH 1-2-3
+  ======================================================= */
+
+  function showPreVideoImage(newIndex) {
+
+    index = newIndex;
+
+    canNext = false;
+
+    viewer.classList.remove(
+      "show"
+    );
+
+
+    viewer.style.display =
+      "block";
+
+
+    viewer.style.visibility =
+      "hidden";
+
+
+    /*
+       Xóa onload cũ
+    */
+
+    viewer.onload = null;
+
+
+    viewer.onload = function () {
+
+      viewer.style.visibility =
+        "visible";
+
+
+      requestAnimationFrame(function () {
+
+        requestAnimationFrame(function () {
+
+          viewer.classList.add(
+            "show"
+          );
+
+        });
+
+      });
+
+
+      setTimeout(function () {
+
+        canNext = true;
 
       }, 500);
 
+    };
 
-      return;
 
-    }
+    viewer.onerror = function () {
 
-
-    /* ---------------------------------------------
-       IMAGE 4 → IMAGE 5
-    --------------------------------------------- */
-
-    if (
-      stage === 6 &&
-      index === 1
-    ) {
-
-      canNext = false;
-
-      viewer.classList.remove("show");
-
-
-      setTimeout(function() {
-
-        showPostQuestionImage(2);
-
-      }, 420);
-
-
-      return;
-
-    }
-
-
-    /* ---------------------------------------------
-       IMAGE 5 → IMAGE 8
-    --------------------------------------------- */
-
-    if (
-      stage === 6 &&
-      index === 2
-    ) {
-
-      canNext = false;
-
-      viewer.classList.remove("show");
-
-
-      setTimeout(function() {
-
-        showPostQuestionImage(3);
-
-      }, 420);
-
-
-      return;
-
-    }
-
-
-    /* ---------------------------------------------
-       IMAGE 8 → HẾT
-    --------------------------------------------- */
-
-    if (
-      stage === 6 &&
-      index === 3
-    ) {
-
-      canNext = false;
-
-      viewer.classList.remove("show");
-
-
-      setTimeout(function() {
-
-        viewer.style.display = "none";
-
-        endBox.classList.add("show");
-
-        /*
-          KHÔNG DỪNG MUSIC 2
-        */
-
-      }, 600);
-
-
-      return;
-
-    }
-
-  }
-);
-
-
-/* =====================================================
-   VIDEO
-===================================================== */
-
-function playVideo() {
-
-  stage = 5;
-
-  canNext = false;
-
-  videoFinished = false;
-
-
-  if (videoWatcher) {
-
-    clearInterval(videoWatcher);
-
-    videoWatcher = null;
-
-  }
-
-
-  videoViewer.style.display = "block";
-
-  videoViewer.classList.remove(
-    "video-show"
-  );
-
-
-  try {
-    videoViewer.currentTime = 0;
-  } catch (e) {}
-
-
-  videoViewer.controls = false;
-
-
-  requestAnimationFrame(function() {
-
-    videoViewer.classList.add(
-      "video-show"
-    );
-
-  });
-
-
-  /*
-    Cố gắng phát video.
-  */
-
-  const promise =
-    videoViewer.play();
-
-
-  if (promise) {
-
-    promise.catch(function(error) {
-
-      console.log(
-        "Video autoplay bị trình duyệt chặn:",
-        error
+      console.error(
+        "❌ Không tải được ảnh:",
+        preVideoImages[index]
       );
 
-    });
+      canNext = true;
+
+    };
+
+
+    viewer.src =
+      preVideoImages[index];
+
+
+    stage = 3;
+
+
+    console.log(
+      "🖼️ Hiện ảnh:",
+      preVideoImages[index]
+    );
 
   }
 
 
-  startVideoWatcher();
+  /* =======================================================
+     SHOW ẢNH SAU QUESTION
+  ======================================================= */
 
-}
+  function showPostQuestionImage(
+    newIndex
+  ) {
+
+    index = newIndex;
+
+    canNext = false;
+
+    viewer.classList.remove(
+      "show"
+    );
 
 
-/* =====================================================
-   VIDEO WATCHER
-===================================================== */
+    viewer.style.display =
+      "block";
 
-function startVideoWatcher() {
 
-  if (videoWatcher) {
+    viewer.style.visibility =
+      "hidden";
 
-    clearInterval(videoWatcher);
+
+    viewer.onload = null;
+
+
+    viewer.onload = function () {
+
+      viewer.style.visibility =
+        "visible";
+
+
+      requestAnimationFrame(function () {
+
+        requestAnimationFrame(function () {
+
+          viewer.classList.add(
+            "show"
+          );
+
+        });
+
+      });
+
+
+      setTimeout(function () {
+
+        canNext = true;
+
+      }, 500);
+
+    };
+
+
+    viewer.onerror = function () {
+
+      console.error(
+        "❌ Không tải được ảnh:",
+        postQuestionImages[index]
+      );
+
+      canNext = true;
+
+    };
+
+
+    viewer.src =
+      postQuestionImages[index];
+
+
+    stage = 6;
+
+
+    /*
+       Chỉ ảnh 7 mới có dòng cảm ơn.
+    */
+
+    if (index === 0) {
+
+      image7Message.classList.add(
+        "show"
+      );
+
+    } else {
+
+      image7Message.classList.remove(
+        "show"
+      );
+
+    }
+
+
+    console.log(
+      "🖼️ Hiện ảnh:",
+      postQuestionImages[index]
+    );
 
   }
 
 
-  videoWatcher =
-    setInterval(function() {
+  /* =======================================================
+     CLICK ẢNH
+  ======================================================= */
 
-      if (
-        stage !== 5 ||
-        videoFinished
-      ) {
+  viewer.addEventListener(
+    "click",
+    function () {
+
+      if (!canNext) {
+        return;
+      }
+
+
+      /* =================================================
+         ẢNH 1 → 2 → 3 → VIDEO
+      ================================================= */
+
+      if (stage === 3) {
+
+        canNext = false;
+
+        viewer.classList.remove(
+          "show"
+        );
+
+
+        setTimeout(function () {
+
+          index++;
+
+
+          if (
+            index <
+            preVideoImages.length
+          ) {
+
+            showPreVideoImage(
+              index
+            );
+
+          } else {
+
+            viewer.style.display =
+              "none";
+
+            playVideo();
+
+          }
+
+        }, 450);
+
 
         return;
-
       }
 
+
+      /* =================================================
+         ẢNH 7 → CÒN 1 ĐIỀU NỮA
+      ================================================= */
 
       if (
-        Number.isFinite(
-          videoViewer.duration
-        ) &&
-        videoViewer.duration > 0
+        stage === 6 &&
+        index === 0
       ) {
 
-        const remaining =
-          videoViewer.duration -
-          videoViewer.currentTime;
+        canNext = false;
+
+        viewer.classList.remove(
+          "show"
+        );
+
+        image7Message.classList.remove(
+          "show"
+        );
 
 
-        if (remaining <= 0.25) {
+        setTimeout(function () {
 
-          clearInterval(videoWatcher);
+          viewer.style.display =
+            "none";
 
-          videoWatcher = null;
+          oneMoreBox.classList.add(
+            "show"
+          );
 
-          goToQuestion();
+        }, 500);
 
-        }
 
+        return;
       }
 
-    }, 100);
 
-}
+      /* =================================================
+         ẢNH 4 → ẢNH 5
+      ================================================= */
 
+      if (
+        stage === 6 &&
+        index === 1
+      ) {
 
-/* =====================================================
-   VIDEO ENDED
-===================================================== */
+        canNext = false;
 
-videoViewer.addEventListener(
-  "ended",
-  function() {
-
-    goToQuestion();
-
-  }
-);
+        viewer.classList.remove(
+          "show"
+        );
 
 
-/* =====================================================
-   VIDEO → QUESTION
-===================================================== */
+        setTimeout(function () {
 
-function goToQuestion() {
+          showPostQuestionImage(
+            2
+          );
 
-  if (videoFinished) {
-    return;
-  }
-
-  videoFinished = true;
+        }, 450);
 
 
-  if (videoWatcher) {
-
-    clearInterval(videoWatcher);
-
-    videoWatcher = null;
-
-  }
+        return;
+      }
 
 
-  /* ---------------------------------------------
-     DỪNG NHẠC 1
-  --------------------------------------------- */
+      /* =================================================
+         ẢNH 5 → ẢNH 8
+      ================================================= */
 
-  stopMusic1();
+      if (
+        stage === 6 &&
+        index === 2
+      ) {
+
+        canNext = false;
+
+        viewer.classList.remove(
+          "show"
+        );
 
 
-  /* ---------------------------------------------
-     FADE
-  --------------------------------------------- */
+        setTimeout(function () {
 
-  videoFade.classList.add(
-    "active"
+          showPostQuestionImage(
+            3
+          );
+
+        }, 450);
+
+
+        return;
+      }
+
+
+      /* =================================================
+         ẢNH 8 → HẾT
+      ================================================= */
+
+      if (
+        stage === 6 &&
+        index === 3
+      ) {
+
+        canNext = false;
+
+        viewer.classList.remove(
+          "show"
+        );
+
+
+        setTimeout(function () {
+
+          viewer.style.display =
+            "none";
+
+
+          endBox.classList.add(
+            "show"
+          );
+
+
+          /*
+             QUAN TRỌNG:
+
+             KHÔNG DỪNG music2.
+
+             music2 vẫn loop.
+          */
+
+        }, 600);
+
+
+        return;
+      }
+
+    }
   );
 
 
-  setTimeout(function() {
+  /* =======================================================
+     VIDEO
+  ======================================================= */
 
-    videoViewer.pause();
+  function playVideo() {
+
+    console.log("🎬 Bắt đầu video");
+
+    stage = 5;
+
+    canNext = false;
+
+    videoFinished = false;
+
+
+    if (videoWatcher) {
+
+      clearInterval(
+        videoWatcher
+      );
+
+      videoWatcher = null;
+
+    }
+
+
+    videoViewer.style.display =
+      "block";
+
 
     videoViewer.classList.remove(
       "video-show"
     );
 
-    videoViewer.style.display =
-      "none";
+
+    videoViewer.controls =
+      false;
 
 
     try {
-      videoViewer.currentTime = 0;
-    } catch (e) {}
+
+      videoViewer.currentTime =
+        0;
+
+    } catch (error) {}
 
 
-    /* ---------------------------------------------
-       QUESTION
-    --------------------------------------------- */
+    requestAnimationFrame(function () {
 
-    questionBox.classList.add(
-      "show"
-    );
-
-    stage = 4;
-
-
-    setTimeout(function() {
-
-      videoFade.classList.remove(
-        "active"
+      videoViewer.classList.add(
+        "video-show"
       );
 
-    }, 400);
-
-  }, 700);
-
-}
+    });
 
 
-/* =====================================================
-   YES
-===================================================== */
+    const playPromise =
+      videoViewer.play();
 
-yesBtn.addEventListener(
-  "click",
-  function() {
 
-    questionBox.classList.remove(
-      "show"
+    if (playPromise) {
+
+      playPromise.catch(
+        function (error) {
+
+          console.error(
+            "❌ Video không phát được:",
+            error
+          );
+
+        }
+      );
+
+    }
+
+
+    startVideoWatcher();
+
+  }
+
+
+  /* =======================================================
+     VIDEO WATCHER
+  ======================================================= */
+
+  function startVideoWatcher() {
+
+    if (videoWatcher) {
+
+      clearInterval(
+        videoWatcher
+      );
+
+    }
+
+
+    videoWatcher =
+      setInterval(function () {
+
+        if (
+          stage !== 5 ||
+          videoFinished
+        ) {
+
+          return;
+
+        }
+
+
+        const duration =
+          videoViewer.duration;
+
+
+        const currentTime =
+          videoViewer.currentTime;
+
+
+        if (
+          Number.isFinite(duration) &&
+          duration > 0
+        ) {
+
+          const remaining =
+            duration -
+            currentTime;
+
+
+          if (
+            remaining <= 0.25
+          ) {
+
+            clearInterval(
+              videoWatcher
+            );
+
+            videoWatcher =
+              null;
+
+
+            goToQuestion();
+
+          }
+
+        }
+
+      }, 100);
+
+  }
+
+
+  /* =======================================================
+     VIDEO ENDED
+  ======================================================= */
+
+  videoViewer.addEventListener(
+    "ended",
+    function () {
+
+      console.log(
+        "🎬 Video đã kết thúc"
+      );
+
+      goToQuestion();
+
+    }
+  );
+
+
+  /* =======================================================
+     VIDEO ERROR
+  ======================================================= */
+
+  videoViewer.addEventListener(
+    "error",
+    function () {
+
+      console.error(
+        "❌ Không thể tải video.mp4"
+      );
+
+    }
+  );
+
+
+  /* =======================================================
+     VIDEO → QUESTION
+  ======================================================= */
+
+  function goToQuestion() {
+
+    if (videoFinished) {
+      return;
+    }
+
+
+    videoFinished = true;
+
+
+    console.log(
+      "➡️ Chuyển sang câu hỏi"
     );
 
 
-    stopNoButtonMovement();
+    if (videoWatcher) {
+
+      clearInterval(
+        videoWatcher
+      );
+
+      videoWatcher =
+        null;
+
+    }
 
 
-    setTimeout(function() {
+    /* ---------------------------------------------------
+       DỪNG MUSIC 1
+    --------------------------------------------------- */
 
-      showPostQuestionImage(0);
-
-    }, 600);
-
-  }
-);
+    stopMusic1();
 
 
-/* =====================================================
-   NO BUTTON
-===================================================== */
+    /* ---------------------------------------------------
+       FADE
+    --------------------------------------------------- */
 
-function moveNoButton() {
-
-  const card =
-    questionCard.getBoundingClientRect();
-
-  const button =
-    noBtn.getBoundingClientRect();
-
-
-  const padding = 15;
-
-
-  const maxX =
-    Math.max(
-      0,
-      card.width -
-      button.width -
-      padding * 2
+    videoFade.classList.add(
+      "active"
     );
 
 
-  const maxY =
-    Math.max(
-      0,
-      card.height -
-      button.height -
-      padding * 2
-    );
+    setTimeout(function () {
+
+      videoViewer.pause();
 
 
-  const x =
-    padding +
-    Math.random() * maxX;
-
-  const y =
-    padding +
-    Math.random() * maxY;
+      videoViewer.classList.remove(
+        "video-show"
+      );
 
 
-  noBtn.style.position =
-    "absolute";
-
-  noBtn.style.left =
-    x + "px";
-
-  noBtn.style.top =
-    y + "px";
-
-  noBtn.style.transform =
-    "none";
-
-}
+      videoViewer.style.display =
+        "none";
 
 
-noBtn.addEventListener(
-  "mouseenter",
-  function() {
+      try {
 
-    moveNoButton();
+        videoViewer.currentTime =
+          0;
 
-  }
-);
+      } catch (error) {}
 
 
-noBtn.addEventListener(
-  "touchstart",
-  function(event) {
+      /* -------------------------------------------------
+         HIỆN QUESTION
+      ------------------------------------------------- */
 
-    event.preventDefault();
-
-    moveNoButton();
-
-  },
-  {
-    passive: false
-  }
-);
+      questionBox.classList.add(
+        "show"
+      );
 
 
-noBtn.addEventListener(
-  "click",
-  function(event) {
+      stage = 4;
 
-    event.preventDefault();
 
-    moveNoButton();
+      setTimeout(function () {
+
+        videoFade.classList.remove(
+          "active"
+        );
+
+      }, 400);
+
+    }, 700);
 
   }
-);
 
 
-function stopNoButtonMovement() {
+  /* =======================================================
+     YES BUTTON
+  ======================================================= */
 
-  noBtn.style.position = "";
-  noBtn.style.left = "";
-  noBtn.style.top = "";
-  noBtn.style.transform = "";
+  yesBtn.addEventListener(
+    "click",
+    function () {
 
-}
-
-
-/* =====================================================
-   ONE MORE
-===================================================== */
-
-oneMoreBtn.addEventListener(
-  "click",
-  function() {
-
-    oneMoreBox.classList.remove(
-      "show"
-    );
+      console.log(
+        "💗 YESN'T"
+      );
 
 
-    setTimeout(function() {
-
-      /*
-        ẢNH 4
-      */
-
-      showPostQuestionImage(1);
+      questionBox.classList.remove(
+        "show"
+      );
 
 
-      /*
-        MUSIC 2 BẮT ĐẦU
-      */
+      resetNoButton();
 
-      startMusic2();
 
-    }, 600);
+      setTimeout(function () {
+
+        showPostQuestionImage(
+          0
+        );
+
+      }, 600);
+
+    }
+  );
+
+
+  /* =======================================================
+     NO BUTTON
+  ======================================================= */
+
+  function moveNoButton() {
+
+    const cardRect =
+      questionCard.getBoundingClientRect();
+
+
+    const buttonRect =
+      noBtn.getBoundingClientRect();
+
+
+    const padding = 15;
+
+
+    const maxX =
+      Math.max(
+        0,
+        cardRect.width -
+        buttonRect.width -
+        padding * 2
+      );
+
+
+    const maxY =
+      Math.max(
+        0,
+        cardRect.height -
+        buttonRect.height -
+        padding * 2
+      );
+
+
+    const x =
+      padding +
+      Math.random() *
+      maxX;
+
+
+    const y =
+      padding +
+      Math.random() *
+      maxY;
+
+
+    noBtn.style.position =
+      "absolute";
+
+
+    noBtn.style.left =
+      x + "px";
+
+
+    noBtn.style.top =
+      y + "px";
+
+
+    noBtn.style.transform =
+      "none";
 
   }
-);
 
 
-/* =====================================================
-   START
-===================================================== */
+  noBtn.addEventListener(
+    "mouseenter",
+    function () {
 
-preloadEverything();
+      moveNoButton();
+
+    }
+  );
+
+
+  noBtn.addEventListener(
+    "touchstart",
+    function (event) {
+
+      event.preventDefault();
+
+      moveNoButton();
+
+    },
+    {
+      passive: false
+    }
+  );
+
+
+  noBtn.addEventListener(
+    "click",
+    function (event) {
+
+      event.preventDefault();
+
+      moveNoButton();
+
+    }
+  );
+
+
+  function resetNoButton() {
+
+    noBtn.style.position =
+      "";
+
+    noBtn.style.left =
+      "";
+
+    noBtn.style.top =
+      "";
+
+    noBtn.style.transform =
+      "";
+
+  }
+
+
+  /* =======================================================
+     ONE MORE BUTTON
+  ======================================================= */
+
+  oneMoreBtn.addEventListener(
+    "click",
+    function () {
+
+      console.log(
+        "➡️ Xem tiếp"
+      );
+
+
+      oneMoreBox.classList.remove(
+        "show"
+      );
+
+
+      setTimeout(function () {
+
+        /*
+           HIỆN ẢNH 4
+        */
+
+        showPostQuestionImage(
+          1
+        );
+
+
+        /*
+           MUSIC 2 BẮT ĐẦU
+        */
+
+        startMusic2();
+
+      }, 600);
+
+    }
+  );
+
+
+  /* =======================================================
+     INITIAL
+  ======================================================= */
+
+  console.log(
+    "✅ Website đã sẵn sàng"
+  );
+
+});
