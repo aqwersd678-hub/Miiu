@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("envelope");
 
   const hint =
-    document.querySelector(".hint");
+    document.getElementById("hint");
 
   const flowerLayer =
     document.getElementById("flowerLayer");
@@ -33,14 +33,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const videoViewer2 =
     document.getElementById("videoViewer2");
 
-  const videoFade =
-    document.getElementById("videoFade");
-
   const questionBox =
     document.getElementById("questionBox");
-
-  const questionCard =
-    document.querySelector(".question-card");
 
   const yesBtn =
     document.getElementById("yesBtn");
@@ -59,6 +53,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const endBox =
     document.getElementById("endBox");
+
+  const confessionBox =
+    document.getElementById("confessionBox");
+
+  const answerBtn =
+    document.getElementById("answerBtn");
 
   const answerBox =
     document.getElementById("answerBox");
@@ -92,18 +92,13 @@ document.addEventListener("DOMContentLoaded", () => {
     "./3.png"
   ];
 
-  /*
-    Thứ tự sau câu hỏi:
-
-    7 → 4 → 5 → 8 → 9
-  */
-
   const postQuestionImages = [
     "./7.png",
     "./4.png",
     "./5.png",
     "./8.png",
-    "./9.png"
+    "./9.png",
+    "./10.png"
   ];
 
 
@@ -111,19 +106,13 @@ document.addEventListener("DOMContentLoaded", () => {
      STATE
   ===================================================== */
 
-  let catClickCount = 0;
+  let stage = "cat";
 
-  let imageIndex = 0;
+  let preIndex = 0;
 
-  let postImageIndex = 0;
+  let postIndex = 0;
 
-  let flowerStarted = false;
-
-  let video1Started = false;
-
-  let video2Started = false;
-
-  let answerSending = false;
+  let music3Started = false;
 
 
   /* =====================================================
@@ -138,88 +127,38 @@ document.addEventListener("DOMContentLoaded", () => {
       "bg-black"
     );
 
-    if (type === "pink") {
-      document.body.classList.add("bg-pink");
-    }
-
-    if (type === "blue") {
-      document.body.classList.add("bg-blue");
-    }
-
-    if (type === "black") {
-      document.body.classList.add("bg-black");
-    }
+    document.body.classList.add(
+      `bg-${type}`
+    );
   }
-
-
-  /* =====================================================
-     INITIAL BACKGROUND
-  ===================================================== */
-
-  setPageBackground("pink");
 
 
   /* =====================================================
      LOADING
   ===================================================== */
 
-  window.addEventListener("load", () => {
+  setTimeout(() => {
 
-    setTimeout(() => {
+    loadingScreen.classList.add("hidden");
 
-      if (loadingScreen) {
-        loadingScreen.classList.add("hide");
-      }
-
-    }, 1000);
-
-  });
+  }, 700);
 
 
   /* =====================================================
-     PRELOAD
+     MUSIC HELPERS
   ===================================================== */
 
-  function preloadImages() {
+  function stopMusic(audio) {
 
-    [
-      ...preVideoImages,
-      ...postQuestionImages,
-      "./6.png"
-    ].forEach(src => {
+    if (!audio) return;
 
-      const img =
-        new Image();
+    audio.pause();
 
-      img.src = src;
-
-    });
-
+    try {
+      audio.currentTime = 0;
+    } catch (error) {}
   }
 
-  preloadImages();
-
-
-  /* =====================================================
-     PRELOAD VIDEOS
-  ===================================================== */
-
-  if (videoViewer) {
-
-    videoViewer.preload = "auto";
-
-  }
-
-  if (videoViewer2) {
-
-    videoViewer2.preload = "auto";
-
-  }
-
-
-  /* =====================================================
-     MUSIC 1
-  ===================================================== */
 
   function startMusic1() {
 
@@ -227,38 +166,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     bgMusic.loop = true;
 
-    bgMusic.currentTime = 0;
+    bgMusic.volume = 1;
 
-    const promise =
-      bgMusic.play();
-
-    if (promise) {
-
-      promise.catch(() => {
-        console.log(
-          "Music 1 autoplay bị trình duyệt chặn."
-        );
-      });
-
-    }
-
+    bgMusic.play().catch(() => {
+      console.log("Music 1 waiting for interaction.");
+    });
   }
 
 
   function stopMusic1() {
 
-    if (!bgMusic) return;
-
-    bgMusic.pause();
-
-    bgMusic.currentTime = 0;
-
+    stopMusic(bgMusic);
   }
 
-
-  /* =====================================================
-     MUSIC 2
-  ===================================================== */
 
   function startMusic2() {
 
@@ -266,59 +186,68 @@ document.addEventListener("DOMContentLoaded", () => {
 
     bgMusic2.loop = true;
 
-    bgMusic2.currentTime = 0;
+    bgMusic2.volume = 1;
 
-    const promise =
-      bgMusic2.play();
-
-    if (promise) {
-
-      promise.catch(() => {
-        console.log(
-          "Music 2 autoplay bị trình duyệt chặn."
-        );
-      });
-
-    }
-
+    bgMusic2.play().catch(() => {
+      console.log("Music 2 waiting for interaction.");
+    });
   }
 
 
   function stopMusic2() {
 
-    if (!bgMusic2) return;
-
-    bgMusic2.pause();
-
-    bgMusic2.currentTime = 0;
-
+    stopMusic(bgMusic2);
   }
 
 
-  /* =====================================================
-     MUSIC 3
-  ===================================================== */
+  /*
+    IMPORTANT:
+
+    Music 3 is started when the user clicks IMAGE 10.
+
+    This is a real user interaction, so mobile browsers
+    are much more likely to allow the audio.
+  */
 
   function startMusic3() {
 
     if (!bgMusic3) return;
 
-    bgMusic3.loop = true;
+    if (!music3Started) {
 
-    bgMusic3.currentTime = 0;
+      music3Started = true;
 
-    const promise =
-      bgMusic3.play();
+      bgMusic3.loop = true;
 
-    if (promise) {
+      bgMusic3.volume = 1;
 
-      promise.catch(() => {
+      bgMusic3.currentTime = 0;
+
+      bgMusic3.play().catch(() => {
 
         console.log(
-          "Music 3 autoplay bị trình duyệt chặn."
+          "Music 3 was blocked. Waiting for another tap."
         );
 
+        music3Started = false;
+
       });
+
+    } else {
+
+      bgMusic3.volume = 1;
+
+      if (bgMusic3.paused) {
+
+        bgMusic3.play().catch(() => {
+
+          console.log(
+            "Music 3 play retry blocked."
+          );
+
+        });
+
+      }
 
     }
 
@@ -331,14 +260,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     bgMusic3.pause();
 
-    bgMusic3.currentTime = 0;
+    try {
+      bgMusic3.currentTime = 0;
+    } catch (error) {}
 
+    music3Started = false;
   }
 
-
-  /* =====================================================
-     STOP ALL MUSIC
-  ===================================================== */
 
   function stopAllMusic() {
 
@@ -352,551 +280,145 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =====================================================
-     HIDE HINT
+     ENVELOPE
   ===================================================== */
 
-  function hideHint() {
+  let envelopeClicks = 0;
 
-    if (!hint) return;
+  envelope.addEventListener("click", () => {
 
-    hint.classList.add("hide");
+    envelopeClicks++;
+
+    if (envelopeClicks === 1) {
+
+      envelope.classList.add("open");
+
+      hint.classList.add("hide");
+
+      return;
+    }
+
+
+    if (envelopeClicks === 2) {
+
+      createFlowers();
+
+      setTimeout(() => {
+
+        stage = "preImages";
+
+        preIndex = 0;
+
+        setPageBackground("pink");
+
+        showPreVideoImage(0);
+
+        startMusic1();
+
+      }, 900);
+
+    }
+
+  });
+
+
+  /* =====================================================
+     FLOWERS
+  ===================================================== */
+
+  function createFlowers() {
+
+    const flowerCount = 80;
+
+    for (let i = 0; i < flowerCount; i++) {
+
+      const flower =
+        document.createElement("div");
+
+      flower.className = "flower";
+
+      const size =
+        Math.random() * 12 + 8;
+
+      flower.style.width =
+        `${size}px`;
+
+      flower.style.height =
+        `${size}px`;
+
+      flower.style.left =
+        `${Math.random() * 100}%`;
+
+      flower.style.top =
+        `${Math.random() * 25}%`;
+
+      flower.style.background =
+        Math.random() > 0.5
+          ? "#f3a8c4"
+          : "#ffffff";
+
+      flower.style.animationDelay =
+        `${Math.random() * 0.8}s`;
+
+      flowerLayer.appendChild(flower);
+
+      setTimeout(() => {
+
+        flower.remove();
+
+      }, 3500);
+
+    }
 
   }
 
 
   /* =====================================================
-     CAT
+     IMAGE DISPLAY
   ===================================================== */
 
-  if (envelope) {
-
-    envelope.addEventListener("click", () => {
-
-      catClickCount++;
-
-      /* -----------------------------------------------
-         LẦN 1
-         Mở phong bì
-      ----------------------------------------------- */
-
-      if (catClickCount === 1) {
-
-        envelope.classList.add("open");
-
-        hideHint();
-
-        return;
-
-      }
-
-
-      /* -----------------------------------------------
-         LẦN 2
-         Hoa + music 1
-      ----------------------------------------------- */
-
-      if (catClickCount === 2) {
-
-        startFlowerTransition();
-
-      }
-
-    });
-
-  }
-
-
-  /* =====================================================
-     FLOWER TRANSITION
-  ===================================================== */
-
-  function startFlowerTransition() {
-
-    if (flowerStarted) return;
-
-    flowerStarted = true;
-
-    hideHint();
-
-    startMusic1();
-
-
-    if (envelope) {
-      envelope.classList.add("hide");
-    }
-
-
-    if (flowerLayer) {
-
-      flowerLayer.innerHTML = "";
-
-      flowerLayer.classList.add("active");
-
-
-      const flowers = [
-        "🌸",
-        "🌷",
-        "🌹",
-        "🌺",
-        "🌼",
-        "💮",
-        "🌸",
-        "🌷",
-        "🌺",
-        "🌹",
-        "🌼",
-        "🌸",
-        "🌷",
-        "🌺",
-        "💮",
-        "🌸",
-        "🌹",
-        "🌼",
-        "🌷",
-        "🌸",
-        "🌺",
-        "🌹"
-      ];
-
-
-      flowers.forEach((flower, index) => {
-
-        const element =
-          document.createElement("div");
-
-        element.className =
-          "flower";
-
-        element.textContent =
-          flower;
-
-        const angle =
-          (Math.PI * 2 * index) /
-          flowers.length;
-
-        const distance =
-          Math.max(
-            window.innerWidth,
-            window.innerHeight
-          ) * 0.85;
-
-        const x =
-          Math.cos(angle) * distance;
-
-        const y =
-          Math.sin(angle) * distance;
-
-        const size =
-          22 +
-          Math.random() * 35;
-
-        const rotation =
-          Math.random() * 360 - 180;
-
-        element.style.setProperty(
-          "--x",
-          `${x}px`
-        );
-
-        element.style.setProperty(
-          "--y",
-          `${y}px`
-        );
-
-        element.style.setProperty(
-          "--size",
-          `${size}px`
-        );
-
-        element.style.setProperty(
-          "--r",
-          `${rotation}deg`
-        );
-
-        element.style.animationDelay =
-          `${index * 0.035}s`;
-
-        flowerLayer.appendChild(
-          element
-        );
-
-      });
-
-    }
-
-
-    /* -----------------------------------------------
-       Sau khi hoa bung xong → ảnh 1
-    ----------------------------------------------- */
-
-    setTimeout(() => {
-
-      if (flowerLayer) {
-        flowerLayer.classList.remove("active");
-      }
-
-      showPreVideoImage(0);
-
-    }, 2200);
-
-  }
-
-
-  /* =====================================================
-     SHOW IMAGE 1 - 2 - 3
-  ===================================================== */
-
-  function showPreVideoImage(newIndex) {
-
-    setPageBackground("pink");
-
-    imageIndex = newIndex;
-
-    if (!viewer) return;
-
-
-    /* Đảm bảo video không hiện */
-
-    if (videoViewer) {
-
-      videoViewer.pause();
-
-      videoViewer.classList.remove(
-        "video-show"
-      );
-
-      videoViewer.style.display =
-        "none";
-
-    }
-
-
-    viewer.src =
-      preVideoImages[imageIndex];
-
-    viewer.style.display =
-      "block";
+  function showViewer() {
 
     viewer.classList.add("show");
 
   }
 
 
-  /* =====================================================
-     IMAGE CLICK
-  ===================================================== */
+  function hideViewer() {
 
-  if (viewer) {
-
-    viewer.addEventListener("click", () => {
-
-      /* -----------------------------------------------
-         ẢNH 1 → 2
-      ----------------------------------------------- */
-
-      if (
-        imageIndex <
-        preVideoImages.length - 1
-      ) {
-
-        imageIndex++;
-
-        showPreVideoImage(
-          imageIndex
-        );
-
-        return;
-
-      }
-
-
-      /* -----------------------------------------------
-         ẢNH 3 → VIDEO 1
-      ----------------------------------------------- */
-
-      startVideo1();
-
-    });
+    viewer.classList.remove("show");
 
   }
 
 
-  /* =====================================================
-     VIDEO 1
-  ===================================================== */
+  function showPreVideoImage(index) {
 
-  function startVideo1() {
+    if (!preVideoImages[index]) return;
 
-    if (video1Started) return;
+    viewer.src =
+      preVideoImages[index];
 
-    video1Started = true;
+    setPageBackground("pink");
 
-
-    if (viewer) {
-
-      viewer.classList.remove(
-        "show"
-      );
-
-      viewer.style.display =
-        "none";
-
-    }
-
-
-    if (!videoViewer) return;
-
-
-    videoViewer.currentTime = 0;
-
-    videoViewer.style.display =
-      "block";
-
-    videoViewer.classList.add(
-      "video-show"
-    );
-
-
-    const promise =
-      videoViewer.play();
-
-    if (promise) {
-
-      promise.catch(error => {
-
-        console.log(
-          "Video 1 không tự phát:",
-          error
-        );
-
-      });
-
-    }
+    showViewer();
 
   }
 
 
-  /* =====================================================
-     VIDEO 1 END
-  ===================================================== */
+  function showPostQuestionImage(index) {
 
-  if (videoViewer) {
+    if (!postQuestionImages[index]) return;
 
-    videoViewer.addEventListener(
-      "ended",
-      () => {
-
-        stopMusic1();
-
-        videoViewer.classList.remove(
-          "video-show"
-        );
-
-        setTimeout(() => {
-
-          videoViewer.style.display =
-            "none";
-
-          showQuestion();
-
-        }, 500);
-
-      }
-    );
-
-  }
-
-
-  /* =====================================================
-     QUESTION
-  ===================================================== */
-
-  function showQuestion() {
-
-    /*
-      Ảnh 6 nằm trong questionBox
-      → nền xanh pastel
-    */
-
-    setPageBackground("blue");
-
-
-    if (questionBox) {
-
-      questionBox.classList.add(
-        "show"
-      );
-
-    }
-
-  }
-
-
-  /* =====================================================
-     YES BUTTON
-  ===================================================== */
-
-  if (yesBtn) {
-
-    yesBtn.addEventListener(
-      "click",
-      () => {
-
-        setPageBackground("blue");
-
-        if (questionBox) {
-
-          questionBox.classList.remove(
-            "show"
-          );
-
-        }
-
-
-        /* -------------------------------------------
-           Hiện ảnh 7
-        ------------------------------------------- */
-
-        postImageIndex = 0;
-
-        showPostQuestionImage(
-          postImageIndex
-        );
-
-
-        if (image7Message) {
-
-          setTimeout(() => {
-
-            image7Message.classList.add(
-              "show"
-            );
-
-          }, 500);
-
-        }
-
-      }
-    );
-
-  }
-
-
-  /* =====================================================
-     NO BUTTON
-  ===================================================== */
-
-  function moveNoButton() {
-
-    if (!noBtn) return;
-
-    const card =
-      questionCard ||
-      document.body;
-
-
-    const cardRect =
-      card.getBoundingClientRect();
-
-
-    const buttonRect =
-      noBtn.getBoundingClientRect();
-
-
-    const maxX =
-      Math.max(
-        0,
-        cardRect.width -
-        buttonRect.width -
-        20
-      );
-
-
-    const maxY =
-      Math.max(
-        0,
-        cardRect.height -
-        buttonRect.height -
-        20
-      );
-
-
-    const randomX =
-      Math.random() * maxX -
-      maxX / 2;
-
-
-    const randomY =
-      Math.random() * maxY -
-      maxY / 2;
-
-
-    noBtn.style.position =
-      "absolute";
-
-    noBtn.style.transform =
-      `translate(${randomX}px, ${randomY}px)`;
-
-  }
-
-
-  if (noBtn) {
-
-    noBtn.addEventListener(
-      "mouseenter",
-      moveNoButton
-    );
-
-    noBtn.addEventListener(
-      "mouseover",
-      moveNoButton
-    );
-
-    noBtn.addEventListener(
-      "touchstart",
-      event => {
-
-        event.preventDefault();
-
-        moveNoButton();
-
-      },
-      {
-        passive: false
-      }
-    );
-
-    noBtn.addEventListener(
-      "click",
-      event => {
-
-        event.preventDefault();
-
-        moveNoButton();
-
-      }
-    );
-
-  }
-
-
-  /* =====================================================
-     SHOW POST-QUESTION IMAGES
-  ===================================================== */
-
-  function showPostQuestionImage(
-    newIndex
-  ) {
-
-    postImageIndex = newIndex;
+    viewer.src =
+      postQuestionImages[index];
 
 
     /*
-      7, 4, 5 → xanh
-      8, 9 → đen
+      7, 4, 5 = blue
+      8, 9, 10 = black
     */
 
-    if (newIndex <= 2) {
+    if (index <= 2) {
 
       setPageBackground("blue");
 
@@ -906,323 +428,274 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
-
-    if (!viewer) return;
-
-
-    viewer.src =
-      postQuestionImages[
-        postImageIndex
-      ];
-
-    viewer.style.display =
-      "block";
-
-    viewer.classList.add(
-      "show"
-    );
-
-
-    /*
-      Nếu đang hiện ảnh 7
-      thì hiện message
-    */
-
-    if (
-      postImageIndex === 0 &&
-      image7Message
-    ) {
-
-      image7Message.classList.add(
-        "show"
-      );
-
-    } else if (image7Message) {
-
-      image7Message.classList.remove(
-        "show"
-      );
-
-    }
+    showViewer();
 
   }
 
 
   /* =====================================================
-     POST IMAGE CLICK
+     MAIN VIEWER CLICK
   ===================================================== */
 
-  /*
-    7 → hiện "Còn 1 điều nữa..."
-    4 → 5
-    5 → 8
-    8 → 9
-    9 → video 2
-  */
+  viewer.addEventListener("click", () => {
 
-  if (viewer) {
 
-    /*
-      Ta dùng một listener riêng thông qua
-      state hiện tại.
-    */
+    /* ---------------------------------------------
+       PRE VIDEO
+    --------------------------------------------- */
 
-    viewer.addEventListener(
-      "click",
-      () => {
+    if (stage === "preImages") {
 
-        /*
-          Nếu đang ở ảnh 1-3,
-          listener phía trên đã xử lý.
-        */
+      if (preIndex < preVideoImages.length - 1) {
 
-        if (
-          flowerStarted &&
-          !video1Started &&
-          imageIndex <= 2
-        ) {
+        preIndex++;
 
-          return;
+        showPreVideoImage(preIndex);
 
-        }
+        return;
 
       }
-    );
+
+      startVideo1();
+
+      return;
+
+    }
+
+
+    /* ---------------------------------------------
+       POST QUESTION
+    --------------------------------------------- */
+
+    if (stage === "postImages") {
+
+      /*
+        7 -> 4
+      */
+
+      if (postIndex === 0) {
+
+        showOneMore();
+
+        return;
+
+      }
+
+
+      /*
+        4 -> 5
+      */
+
+      if (postIndex < postQuestionImages.length - 1) {
+
+        postIndex++;
+
+        showPostQuestionImage(postIndex);
+
+        return;
+
+      }
+
+
+      /*
+        10 -> CONFESSION
+
+        THIS IS THE IMPORTANT PART.
+
+        The click on image 10 is the user gesture
+        that starts music3.
+      */
+
+      if (postIndex === postQuestionImages.length - 1) {
+
+        showConfession();
+
+        startMusic3();
+
+        return;
+
+      }
+
+    }
+
+  });
+
+
+  /* =====================================================
+     VIDEO 1
+  ===================================================== */
+
+  function startVideo1() {
+
+    stage = "video1";
+
+    hideViewer();
+
+    setPageBackground("black");
+
+    videoViewer.currentTime = 0;
+
+    videoViewer.classList.add("video-show");
+
+    videoViewer.play().catch(() => {
+
+      console.log(
+        "Video 1 waiting for interaction."
+      );
+
+    });
 
   }
+
+
+  videoViewer.addEventListener(
+    "ended",
+    () => {
+
+      stopMusic1();
+
+      videoViewer.classList.remove(
+        "video-show"
+      );
+
+      showQuestion();
+
+    }
+  );
+
+
+  /* =====================================================
+     QUESTION
+  ===================================================== */
+
+  function showQuestion() {
+
+    stage = "question";
+
+    setPageBackground("blue");
+
+    questionBox.classList.add("show");
+
+  }
+
+
+  /* =====================================================
+     YES BUTTON
+  ===================================================== */
+
+  yesBtn.addEventListener("click", () => {
+
+    questionBox.classList.remove("show");
+
+    stage = "postImages";
+
+    postIndex = 0;
+
+    setPageBackground("blue");
+
+    viewer.src =
+      postQuestionImages[0];
+
+    showViewer();
+
+    image7Message.classList.add("show");
+
+  });
+
+
+  /* =====================================================
+     NO BUTTON
+  ===================================================== */
+
+  function moveNoButton() {
+
+    const maxX =
+      Math.max(
+        40,
+        window.innerWidth / 2 - 100
+      );
+
+    const maxY =
+      Math.max(
+        40,
+        window.innerHeight / 2 - 100
+      );
+
+    const x =
+      (Math.random() * maxX * 2) - maxX;
+
+    const y =
+      (Math.random() * maxY * 2) - maxY;
+
+    noBtn.style.transform =
+      `translate(${x}px, ${y}px)`;
+
+  }
+
+
+  noBtn.addEventListener(
+    "mouseenter",
+    moveNoButton
+  );
+
+  noBtn.addEventListener(
+    "touchstart",
+    (event) => {
+
+      event.preventDefault();
+
+      moveNoButton();
+
+    },
+    {
+      passive: false
+    }
+  );
 
 
   /* =====================================================
      ONE MORE
   ===================================================== */
 
-  if (image7Message) {
-
-    image7Message.addEventListener(
-      "click",
-      () => {
-
-        showOneMore();
-
-      }
-    );
-
-  }
-
-
-  /*
-    Nếu HTML dùng click trực tiếp vào ảnh 7
-    thì xử lý bằng viewer ở đây.
-  */
-
-  function handlePostImageClick() {
-
-    if (
-      postImageIndex === 0
-    ) {
-
-      showOneMore();
-
-      return;
-
-    }
-
-
-    if (
-      postImageIndex <
-      postQuestionImages.length - 1
-    ) {
-
-      postImageIndex++;
-
-      showPostQuestionImage(
-        postImageIndex
-      );
-
-      return;
-
-    }
-
-
-    /*
-      Ảnh 9 → video 2
-    */
-
-    startVideo2();
-
-  }
-
-
-  /*
-    Listener này phân biệt:
-    - đang ở ảnh 1-3
-    - đang ở ảnh 7-4-5-8-9
-  */
-
-  if (viewer) {
-
-    viewer.addEventListener(
-      "click",
-      () => {
-
-        /*
-          Nếu video1 chưa chạy
-          và đang ở chuỗi 1-3
-        */
-
-        if (
-          !video1Started &&
-          !video2Started
-        ) {
-
-          /*
-            imageIndex đang được dùng
-            cho chuỗi 1-3
-          */
-
-          if (
-            imageIndex <
-            preVideoImages.length - 1
-          ) {
-
-            return;
-
-          }
-
-          /*
-            Nếu đã tới ảnh 3,
-            listener đầu tiên đã gọi video1.
-          */
-
-          return;
-
-        }
-
-
-        /*
-          Nếu video2 chưa chạy
-          và đang ở chuỗi 7-4-5-8-9
-        */
-
-        if (
-          !video2Started &&
-          questionBox &&
-          !questionBox.classList.contains(
-            "show"
-          )
-        ) {
-
-          /*
-            Chỉ xử lý nếu post image
-            đang thực sự hiển thị.
-          */
-
-          if (
-            viewer.src.includes(
-              postQuestionImages[
-                postImageIndex
-              ].replace("./", "")
-            )
-          ) {
-
-            handlePostImageClick();
-
-          }
-
-        }
-
-      }
-    );
-
-  }
-
-
-  /* =====================================================
-     SHOW ONE MORE
-  ===================================================== */
-
   function showOneMore() {
 
-    if (image7Message) {
+    stage = "oneMore";
 
-      image7Message.classList.remove(
-        "show"
-      );
+    hideViewer();
 
-    }
-
-
-    if (viewer) {
-
-      viewer.classList.remove(
-        "show"
-      );
-
-      viewer.style.display =
-        "none";
-
-    }
-
-
-    setPageBackground("blue");
-
-
-    if (oneMoreBox) {
-
-      oneMoreBox.classList.add(
-        "show"
-      );
-
-    }
-
-  }
-
-
-  /* =====================================================
-     ONE MORE BUTTON
-  ===================================================== */
-
-  if (oneMoreBtn) {
-
-    oneMoreBtn.addEventListener(
-      "click",
-      () => {
-
-        setPageBackground("blue");
-
-
-        if (oneMoreBox) {
-
-          oneMoreBox.classList.remove(
-            "show"
-          );
-
-        }
-
-
-        /*
-          Bắt đầu music2
-        */
-
-        stopMusic1();
-
-        startMusic2();
-
-
-        /*
-          Hiện ảnh 4
-        */
-
-        postImageIndex = 1;
-
-        showPostQuestionImage(
-          postImageIndex
-        );
-
-      }
+    image7Message.classList.remove(
+      "show"
     );
 
+    setPageBackground("pink");
+
+    oneMoreBox.classList.add("show");
+
   }
+
+
+  oneMoreBtn.addEventListener(
+    "click",
+    () => {
+
+      oneMoreBox.classList.remove(
+        "show"
+      );
+
+      stage = "postImages";
+
+      postIndex = 1;
+
+      setPageBackground("blue");
+
+      showPostQuestionImage(
+        postIndex
+      );
+
+      startMusic2();
+
+    }
+  );
 
 
   /* =====================================================
@@ -1231,217 +704,151 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function startVideo2() {
 
-    if (video2Started) return;
+    stage = "video2";
 
-    video2Started = true;
-
-
-    /*
-      Ảnh 9 kết thúc
-      → nền đen
-      → video2
-    */
+    hideViewer();
 
     setPageBackground("black");
 
+    videoViewer2.currentTime = 0;
 
-    if (viewer) {
+    videoViewer2.classList.add(
+      "video-show"
+    );
 
-      viewer.classList.remove(
-        "show"
+    /*
+      Music 2 CONTINUES through video2.
+
+      It is intentionally NOT stopped here.
+    */
+
+    videoViewer2.play().catch(() => {
+
+      console.log(
+        "Video 2 waiting for interaction."
       );
 
-      viewer.style.display =
-        "none";
+    });
 
-    }
+  }
 
 
-    if (videoViewer2) {
+  /*
+    When image 10 is clicked we currently show
+    confession instead of video2.
 
-      videoViewer2.currentTime = 0;
+    Therefore video2 is reached from image 9
+    only if needed by the flow.
 
-      videoViewer2.style.display =
-        "block";
+    This handler remains here for the existing
+    video2 section.
+  */
 
-      videoViewer2.classList.add(
+  videoViewer2.addEventListener(
+    "ended",
+    () => {
+
+      videoViewer2.classList.remove(
         "video-show"
       );
 
+      /*
+        Music 2 continues while "Hết..." appears.
+      */
 
-      const promise =
-        videoViewer2.play();
-
-      if (promise) {
-
-        promise.catch(error => {
-
-          console.log(
-            "Video 2 không tự phát:",
-            error
-          );
-
-        });
-
-      }
+      showEnd();
 
     }
+  );
+
+
+  /* =====================================================
+     END
+  ===================================================== */
+
+  function showEnd() {
+
+    stage = "end";
+
+    setPageBackground("black");
+
+    endBox.classList.add("show");
+
+    setTimeout(() => {
+
+      endBox.classList.remove(
+        "show"
+      );
+
+      /*
+        In the current new flow the confession
+        is reached from image 10.
+
+        This fallback keeps the old video2 -> end
+        route functional.
+      */
+
+      showConfession();
+
+      startMusic3();
+
+    }, 2200);
 
   }
 
 
   /* =====================================================
-     VIDEO 2 END
+     CONFESSION
   ===================================================== */
 
-  if (videoViewer2) {
+  function showConfession() {
 
-    videoViewer2.addEventListener(
-      "ended",
-      () => {
+    stage = "confession";
 
-        stopMusic2();
+    hideViewer();
 
+    setPageBackground("pink");
 
-        videoViewer2.classList.remove(
-          "video-show"
-        );
+    /*
+      Music 2 ends exactly when confession begins.
+    */
 
+    stopMusic2();
 
-        setTimeout(() => {
-
-          videoViewer2.style.display =
-            "none";
-
-
-          /*
-            Hiện "Hết..."
-          */
-
-          setPageBackground("black");
-
-
-          if (endBox) {
-
-            endBox.classList.add(
-              "show"
-            );
-
-          }
-
-
-          /*
-            Sau 2.2 giây:
-            → tắt Hết
-            → hiện ô trả lời
-            → music3
-          */
-
-          setTimeout(() => {
-
-            if (endBox) {
-
-              endBox.classList.remove(
-                "show"
-              );
-
-            }
-
-            showAnswerBox();
-
-          }, 2200);
-
-        }, 500);
-
-      }
+    confessionBox.classList.add(
+      "show"
     );
 
   }
 
 
   /* =====================================================
-     ANSWER BOX
+     ANSWER PAGE
   ===================================================== */
 
-  function showAnswerBox() {
+  answerBtn.addEventListener(
+    "click",
+    () => {
 
-    /*
-      Tắt music2 hoàn toàn
-    */
+      stage = "answer";
 
-    stopMusic2();
+      confessionBox.classList.remove(
+        "show"
+      );
 
-
-    /*
-      Answer section
-    */
-
-    if (answerBox) {
+      setPageBackground("pink");
 
       answerBox.classList.add(
         "show"
       );
 
-    }
+      /*
+        Music 3 is ALREADY playing.
 
+        We simply make sure it continues.
+      */
 
-    /*
-      Music3 bắt đầu
-    */
-
-    startMusic3();
-
-
-    /*
-      Nếu autoplay bị trình duyệt chặn,
-      lần người dùng chạm/nhập vào ô trả lời
-      sẽ thử phát lại.
-    */
-
-    if (answerBox) {
-
-      const resumeMusic =
-        () => {
-
-          if (
-            bgMusic3 &&
-            bgMusic3.paused
-          ) {
-
-            const promise =
-              bgMusic3.play();
-
-            if (promise) {
-
-              promise.catch(() => {});
-
-            }
-
-          }
-
-        };
-
-
-      answerBox.addEventListener(
-        "click",
-        resumeMusic,
-        {
-          once: false
-        }
-      );
-
-      answerBox.addEventListener(
-        "touchstart",
-        resumeMusic,
-        {
-          once: false
-        }
-      );
-
-    }
-
-
-    if (answerInput) {
+      startMusic3();
 
       setTimeout(() => {
 
@@ -1450,87 +857,46 @@ document.addEventListener("DOMContentLoaded", () => {
       }, 500);
 
     }
-
-  }
+  );
 
 
   /* =====================================================
      SEND ANSWER
   ===================================================== */
 
-  if (sendAnswerBtn) {
-
-    sendAnswerBtn.addEventListener(
-      "click",
-      sendAnswer
-    );
-
-  }
+  sendAnswerBtn.addEventListener(
+    "click",
+    sendAnswer
+  );
 
 
-  /* =====================================================
-     ENTER / CTRL + ENTER
-  ===================================================== */
+  answerInput.addEventListener(
+    "keydown",
+    (event) => {
 
-  if (answerInput) {
+      if (
+        event.ctrlKey &&
+        event.key === "Enter"
+      ) {
 
-    answerInput.addEventListener(
-      "keydown",
-      event => {
-
-        /*
-          Ctrl + Enter / Cmd + Enter
-        */
-
-        if (
-          (event.ctrlKey ||
-           event.metaKey) &&
-          event.key === "Enter"
-        ) {
-
-          event.preventDefault();
-
-          sendAnswer();
-
-        }
+        sendAnswer();
 
       }
-    );
 
-  }
+    }
+  );
 
-
-  /* =====================================================
-     SEND FUNCTION
-  ===================================================== */
 
   async function sendAnswer() {
-
-    if (answerSending) return;
-
-    if (!answerInput) return;
-
 
     const answer =
       answerInput.value.trim();
 
 
-    /*
-      Không cho gửi trống
-    */
-
     if (!answer) {
 
-      if (answerStatus) {
-
-        answerStatus.textContent =
-          "Viết câu trả lời cho anh đã nhé 💗";
-
-        answerStatus.classList.add(
-          "error"
-        );
-
-      }
+      answerStatus.textContent =
+        "Em chưa viết gì kìa... 💗";
 
       answerInput.focus();
 
@@ -1539,72 +905,36 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    answerSending = true;
+    sendAnswerBtn.disabled = true;
 
-
-    if (answerStatus) {
-
-      answerStatus.classList.remove(
-        "error"
-      );
-
-      answerStatus.textContent =
-        "Đang gửi... 💗";
-
-    }
-
-
-    if (sendAnswerBtn) {
-
-      sendAnswerBtn.disabled =
-        true;
-
-    }
-
-    answerInput.disabled =
-      true;
+    answerStatus.textContent =
+      "Đang gửi...";
 
 
     /*
-      Dừng music3 khi gửi
+      Stop music3 when submitting.
     */
 
     stopMusic3();
 
 
-    /*
-      Thời gian
-    */
+    try {
 
-    const now =
-      new Date();
+      const data =
+        new URLSearchParams();
 
-
-    const time =
-      now.toLocaleString(
-        "vi-VN"
+      data.append(
+        "answer",
+        answer
       );
 
+      data.append(
+        "time",
+        new Date().toLocaleString(
+          "vi-VN"
+        )
+      );
 
-    /*
-      Dữ liệu gửi
-    */
-
-    const formData =
-      new URLSearchParams();
-
-    formData.append(
-      "answer",
-      answer
-    );
-
-    formData.append(
-      "time",
-      time
-    );
-
-
-    try {
 
       await fetch(
         GOOGLE_SCRIPT_URL,
@@ -1615,86 +945,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
           headers: {
             "Content-Type":
-              "application/x-www-form-urlencoded;charset=UTF-8"
+              "application/x-www-form-urlencoded"
           },
 
-          body:
-            formData.toString()
+          body: data.toString()
         }
       );
 
 
-      /*
-        Vì no-cors không đọc được
-        response từ Apps Script,
-        fetch resolve = coi như gửi thành công.
-      */
+      answerStatus.textContent =
+        "Đã gửi câu trả lời 💗";
 
-      if (answerStatus) {
-
-        answerStatus.classList.remove(
-          "error"
-        );
-
-        answerStatus.textContent =
-          "Đã gửi rồi... 💗";
-
-      }
-
-
-      /*
-        Chờ một chút rồi rời trang
-      */
 
       setTimeout(() => {
 
         leavePage();
 
-      }, 1500);
+      }, 1200);
 
 
     } catch (error) {
 
-      console.error(
-        "Lỗi gửi câu trả lời:",
-        error
-      );
+      console.error(error);
 
+      answerStatus.textContent =
+        "Có lỗi xảy ra, thử lại nhé.";
 
-      /*
-        Nếu fetch lỗi
-      */
-
-      answerSending = false;
-
-      if (sendAnswerBtn) {
-
-        sendAnswerBtn.disabled =
-          false;
-
-      }
-
-      answerInput.disabled =
+      sendAnswerBtn.disabled =
         false;
-
-
-      /*
-        Cho music3 chạy lại
-      */
-
-      startMusic3();
-
-
-      if (answerStatus) {
-
-        answerStatus.classList.add(
-          "error"
-        );
-
-        answerStatus.textContent =
-          "Có lỗi khi gửi, thử lại nhé :(";
-
-      }
 
     }
 
@@ -1707,32 +985,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function leavePage() {
 
-    /*
-      Dừng toàn bộ âm thanh
-    */
-
     stopAllMusic();
 
-
-    /*
-      Dừng video
-    */
-
-    if (videoViewer) {
+    try {
 
       videoViewer.pause();
 
-    }
-
-    if (videoViewer2) {
-
       videoViewer2.pause();
 
-    }
+    } catch (error) {}
 
 
     /*
-      Thử đóng tab
+      Try closing the tab.
     */
 
     try {
@@ -1744,34 +1009,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
       window.close();
 
-    } catch (error) {
-
-      console.log(
-        "Không thể đóng tab:",
-        error
-      );
-
-    }
+    } catch (error) {}
 
 
     /*
-      Một số trình duyệt không cho
-      JS đóng tab người dùng mở.
-
-      Fallback:
-      biến trang thành trắng.
+      If browser refuses to close the tab,
+      replace the page with a blank screen.
     */
 
     setTimeout(() => {
 
-      document.body.innerHTML =
-        "";
+      document.body.innerHTML = "";
 
       document.body.style.background =
-        "#ffffff";
-
-      document.title =
-        "💗";
+        "#000";
 
     }, 300);
 
@@ -1779,91 +1030,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =====================================================
-     ERROR LOG
+     MOBILE VIDEO SETTINGS
   ===================================================== */
 
-  if (videoViewer) {
+  videoViewer.playsInline = true;
 
-    videoViewer.addEventListener(
-      "error",
-      event => {
+  videoViewer2.playsInline = true;
 
-        console.error(
-          "Video 1 error:",
-          event
-        );
+  videoViewer.setAttribute(
+    "playsinline",
+    ""
+  );
 
-      }
-    );
+  videoViewer.setAttribute(
+    "webkit-playsinline",
+    ""
+  );
 
-  }
+  videoViewer2.setAttribute(
+    "playsinline",
+    ""
+  );
 
+  videoViewer2.setAttribute(
+    "webkit-playsinline",
+    ""
+  );
 
-  if (videoViewer2) {
-
-    videoViewer2.addEventListener(
-      "error",
-      event => {
-
-        console.error(
-          "Video 2 error:",
-          event
-        );
-
-      }
-    );
-
-  }
-
-
-  if (bgMusic) {
-
-    bgMusic.addEventListener(
-      "error",
-      event => {
-
-        console.error(
-          "Music 1 error:",
-          event
-        );
-
-      }
-    );
-
-  }
-
-
-  if (bgMusic2) {
-
-    bgMusic2.addEventListener(
-      "error",
-      event => {
-
-        console.error(
-          "Music 2 error:",
-          event
-        );
-
-      }
-    );
-
-  }
-
-
-  if (bgMusic3) {
-
-    bgMusic3.addEventListener(
-      "error",
-      event => {
-
-        console.error(
-          "Music 3 error:",
-          event
-        );
-
-      }
-    );
-
-  }
 
 });

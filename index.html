@@ -1,173 +1,86 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
   <meta charset="UTF-8">
 
   <meta
     name="viewport"
-    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
   >
 
-  <title>For My Princess 💗</title>
+  <title>For You 💗</title>
 
   <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
 
-  <!-- ==================================================
+  <!-- =========================
        LOADING
-  =================================================== -->
-
+  ========================== -->
   <div id="loadingScreen">
-
-    <div class="loading-heart">
-      💗
-    </div>
-
-    <div class="loading-text">
-      Đang chuẩn bị một điều nhỏ dành cho công chúa...
-    </div>
-
+    <div class="loading-text">Loading...</div>
   </div>
 
 
-  <!-- ==================================================
-       HINT
-  =================================================== -->
+  <!-- =========================
+       ENVELOPE
+  ========================== -->
+  <div id="envelope" class="envelope">
+    <div class="envelope-back"></div>
 
-  <div class="hint">
-    Chạm vào chú mèo đi nào... 🐱
-  </div>
-
-
-  <!-- ==================================================
-       CAT ENVELOPE
-  =================================================== -->
-
-  <div
-    class="cat-envelope"
-    id="envelope"
-  >
-
-    <div class="cat-ear left-ear"></div>
-    <div class="cat-ear right-ear"></div>
-
-    <div class="cat-body">
-
-      <div class="cat-flap"></div>
-
-      <div class="cat-face">
-
-        <div class="cat-eye left-eye"></div>
-        <div class="cat-eye right-eye"></div>
-
-        <div class="cat-nose"></div>
-
-        <div class="cat-mouth">
-          <span></span>
-          <span></span>
-        </div>
-
-        <div class="cat-whisker left-w1"></div>
-        <div class="cat-whisker left-w2"></div>
-
-        <div class="cat-whisker right-w1"></div>
-        <div class="cat-whisker right-w2"></div>
-
-      </div>
-
-      <div class="cat-paw left-paw">
-        🐾
-      </div>
-
-      <div class="cat-paw right-paw">
-        🐾
-      </div>
-
+    <div class="letter">
+      <div class="letter-text">For You</div>
     </div>
 
+    <div class="envelope-front"></div>
+  </div>
+
+  <div id="hint">
+    Chạm vào chú mèo nhé...
   </div>
 
 
-  <!-- ==================================================
-       FLOWERS
-  =================================================== -->
-
+  <!-- =========================
+       FLOWER EFFECT
+  ========================== -->
   <div id="flowerLayer"></div>
 
 
-  <!-- ==================================================
+  <!-- =========================
        IMAGE VIEWER
-  =================================================== -->
-
+  ========================== -->
   <img
     id="viewer"
     src=""
-    alt="memory"
+    alt=""
   >
 
-  <div id="imageCaption"></div>
 
-
-  <!-- ==================================================
+  <!-- =========================
        VIDEO 1
-  =================================================== -->
-
+  ========================== -->
   <video
     id="videoViewer"
     playsinline
     webkit-playsinline
     preload="auto"
-    controlslist="nodownload nofullscreen noremoteplayback"
-    disablepictureinpicture
   >
-
-    <source
-      src="./video.mp4"
-      type="video/mp4"
-    >
-
+    <source src="./video.mp4" type="video/mp4">
   </video>
 
 
-  <!-- ==================================================
-       VIDEO 2
-  =================================================== -->
-
-  <video
-    id="videoViewer2"
-    playsinline
-    webkit-playsinline
-    preload="auto"
-    controlslist="nodownload nofullscreen noremoteplayback"
-    disablepictureinpicture
-  >
-
-    <source
-      src="./video2.mp4"
-      type="video/mp4"
-    >
-
-  </video>
-
-
-  <div id="videoFade"></div>
-
-
-  <!-- ==================================================
+  <!-- =========================
        QUESTION
-  =================================================== -->
-
+  ========================== -->
   <div id="questionBox">
 
-    <div class="question-card">
+    <div id="questionCard">
 
       <img
+        id="questionImage"
         src="./6.png"
-        class="question-image"
-        alt="question"
+        alt=""
       >
 
       <div class="question-text">
@@ -177,11 +90,11 @@
       <div class="question-buttons">
 
         <button id="yesBtn">
-          YESN'T 💗
+          YESN'T
         </button>
 
         <button id="noBtn">
-          NON'T 🙈
+          NON'T
         </button>
 
       </div>
@@ -191,19 +104,19 @@
   </div>
 
 
-  <!-- ==================================================
+  <!-- =========================
        IMAGE 7 MESSAGE
-  =================================================== -->
-
+  ========================== -->
   <div id="image7Message">
-    Cảm ơn công chúa đã tham gia 💗
+    <div class="image7-text">
+      Cảm ơn công chúa đã tham gia 💗
+    </div>
   </div>
 
 
-  <!-- ==================================================
+  <!-- =========================
        ONE MORE
-  =================================================== -->
-
+  ========================== -->
   <div id="oneMoreBox">
 
     <div id="oneMoreText">
@@ -211,28 +124,63 @@
     </div>
 
     <button id="oneMoreBtn">
-      Xem tiếp 💗
+      Xem tiếp
     </button>
 
   </div>
 
 
-  <!-- ==================================================
-       END
-  =================================================== -->
+  <!-- =========================
+       VIDEO 2
+  ========================== -->
+  <video
+    id="videoViewer2"
+    playsinline
+    webkit-playsinline
+    preload="auto"
+  >
+    <source src="./video2.mp4" type="video/mp4">
+  </video>
 
+
+  <!-- =========================
+       END
+  ========================== -->
   <div id="endBox">
-    Hết...
+    <div id="endText">
+      Hết...
+    </div>
   </div>
 
 
-  <!-- ==================================================
-       ANSWER BOX
-  =================================================== -->
+  <!-- =========================
+       CONFESSION
+  ========================== -->
+  <div id="confessionBox">
 
+    <div class="confession-content">
+
+      <div class="confession-text">
+        This is my sincerest confession, with all the love and tenderness I have.
+        <br><br>
+        Will you let me be yours, once more?
+      </div>
+
+      <button id="answerBtn">
+        Câu trả lời của em
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       ANSWER BOX
+  ========================== -->
   <div id="answerBox">
 
-    <div class="answer-card">
+    <div class="answer-content">
 
       <div class="answer-title">
         Câu trả lời của em...
@@ -240,12 +188,12 @@
 
       <textarea
         id="answerInput"
-        placeholder="Viết điều em muốn nói ở đây..."
-        maxlength="2000"
+        placeholder="Viết câu trả lời của em ở đây..."
+        rows="5"
       ></textarea>
 
       <button id="sendAnswerBtn">
-        Gửi 💗
+        Gửi
       </button>
 
       <div id="answerStatus"></div>
@@ -255,66 +203,27 @@
   </div>
 
 
-  <!-- ==================================================
-       MUSIC 1
-  =================================================== -->
+  <!-- =========================
+       MUSIC
+  ========================== -->
 
-  <audio
-    id="bgMusic"
-    preload="auto"
-  >
-
-    <source
-      src="./music.mp3"
-      type="audio/mpeg"
-    >
-
+  <!-- Music 1 -->
+  <audio id="bgMusic" preload="auto">
+    <source src="./music.mp3" type="audio/mpeg">
   </audio>
 
-
-  <!-- ==================================================
-       MUSIC 2
-  =================================================== -->
-
-  <audio
-    id="bgMusic2"
-    preload="auto"
-    loop
-  >
-
-    <source
-      src="./music2.mp3"
-      type="audio/mpeg"
-    >
-
+  <!-- Music 2 -->
+  <audio id="bgMusic2" preload="auto">
+    <source src="./music2.mp3" type="audio/mpeg">
   </audio>
 
-
-  <!-- ==================================================
-       MUSIC 3
-       Dùng riêng cho phần trả lời
-  =================================================== -->
-
-  <audio
-    id="bgMusic3"
-    preload="auto"
-    loop
-  >
-
-    <source
-      src="./music3.mp3"
-      type="audio/mpeg"
-    >
-
+  <!-- Music 3 -->
+  <audio id="bgMusic3" preload="auto" loop>
+    <source src="./music3.mp3" type="audio/mpeg">
   </audio>
 
-
-  <!-- ==================================================
-       SCRIPT
-  =================================================== -->
 
   <script src="./script.js"></script>
 
 </body>
-
 </html>
