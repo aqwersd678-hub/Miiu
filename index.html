@@ -22,6 +22,7 @@
     <span class="cat-label">For You 💌</span>
   </button>
   <div id="hint" class="hint">Chạm vào chú mèo nhé...</div>
+  <div id="assetWarning" hidden role="alert"></div>
   <div id="flowerLayer" aria-hidden="true"></div>
   <img id="viewer" alt="Những điều muốn gửi đến bạn" tabindex="0">
   <video id="videoViewer" playsinline webkit-playsinline preload="metadata"><source src="./video.mp4" type="video/mp4"></video>
@@ -38,9 +39,16 @@
   <section id="oneMoreBox" class="screen"><p id="oneMoreText">Còn 1 điều nữa...</p><button id="oneMoreBtn" type="button">Xem tiếp</button></section>
   <section id="endBox" class="screen"><span>Hết...</span></section>
   <section id="confessionBox" class="screen">
+    <div class="confession-decor" aria-hidden="true">
+      <span>✦</span><span>♡</span><span>✧</span><span>♡</span><span>✦</span><span>♡</span>
+    </div>
     <div class="panel confession-content">
-      <p class="confession-text">This is my sincerest confession, with all the love and tenderness I have.<br><br>Will you let me be yours, once more?</p>
-      <button id="answerBtn" type="button">Câu trả lời của em</button>
+      <div class="confession-seal" aria-hidden="true">💌</div>
+      <div class="confession-eyebrow">A LITTLE LETTER, JUST FOR YOU</div>
+      <div class="confession-divider" aria-hidden="true"><span>✦</span><span>♥</span><span>✦</span></div>
+      <p class="confession-text">This is my sincerest confession, with all the love and tenderness I have.<br><br><strong>Will you let me be yours, once more?</strong></p>
+      <div class="confession-signature">With all my heart ♡</div>
+      <button id="answerBtn" type="button">Câu trả lời của em <span aria-hidden="true">→</span></button>
     </div>
   </section>
   <section id="answerBox" class="screen">

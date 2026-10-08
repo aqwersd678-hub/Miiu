@@ -46,10 +46,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
   function showImage(path, bg) {
+    // Hai ảnh 9 và 10 dùng chung kích thước khung, không bị kéo méo.
+    viewer.classList.toggle('final-photo', path === './9.png' || path === './10.png');
     viewer.src = path;
     background(bg);
     viewer.classList.add('show');
-    viewer.onerror = () => console.warn('Thiếu hoặc sai đường dẫn ảnh:', path);
+    viewer.onerror = () => {
+      console.error('Thiếu ảnh:', path);
+      viewer.removeAttribute('src');
+      viewer.classList.remove('show');
+      const warning = document.getElementById('assetWarning');
+      if (warning) { warning.hidden = false; warning.textContent = '⚠️ Không tìm thấy ' + path + '. Hãy tải ảnh/video/nhạc gốc lên cùng thư mục với index.html.'; }
+    };
+    viewer.onload = () => { const warning = document.getElementById('assetWarning'); if (warning) warning.hidden = true; };
   }
   function hideImage() { viewer.classList.remove('show'); }
   function nextImage() {

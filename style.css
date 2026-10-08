@@ -4,3 +4,126 @@
 #flowerLayer{position:fixed;inset:0;pointer-events:none;z-index:60;overflow:hidden}.flower{position:absolute;left:50%;top:50%;font-size:var(--size);animation:burst 2.5s ease-out forwards}@keyframes burst{0%{transform:translate(-50%,-50%) scale(.1);opacity:0}12%{opacity:1}100%{transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) rotate(var(--r));opacity:0}}
 #viewer{position:fixed;left:50%;top:50%;max-width:92vw;max-height:78dvh;width:auto;height:auto;object-fit:contain;transform:translate(-50%,-50%) scale(.97);z-index:40;display:none;opacity:0;border-radius:18px;box-shadow:0 15px 50px #6e2d502e;cursor:pointer;transition:opacity .4s,transform .4s}#viewer.show{display:block;opacity:1;transform:translate(-50%,-50%) scale(1)}#videoViewer,#videoViewer2{position:fixed;left:50%;top:50%;z-index:45;display:none;opacity:0;transform:translate(-50%,-50%);object-fit:contain;background:#000;transition:opacity .5s}#videoViewer{width:100vw;height:100dvh;object-fit:cover}#videoViewer2{width:94vw;height:85dvh;max-width:1400px;border:7px solid #ccecf1;border-radius:22px}#videoViewer.video-show,#videoViewer2.video-show{display:block;opacity:1}
 .screen{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .6s,visibility .6s;background:#e4f7faf7}.screen.show{opacity:1;visibility:visible;pointer-events:auto}.panel{width:min(92vw,480px);padding:28px 22px;border-radius:25px;background:#fffc;box-shadow:0 20px 60px #64304a30;text-align:center}.question-image{display:block;max-width:100%;max-height:43dvh;object-fit:contain;margin:0 auto 20px;border-radius:16px}.question-text{font-size:20px;color:#4d6870;font-weight:600}.question-buttons{display:flex;justify-content:center;gap:20px;min-height:52px}.question-buttons button,#oneMoreBtn,#answerBtn,#sendAnswerBtn{border:0;border-radius:999px;padding:13px 25px;background:#8dcfd8;color:#fff;font-weight:600;box-shadow:0 8px 20px #64b4be40}#noBtn{background:#f1edf0;color:#795c6a;position:relative;z-index:2}#image7Message{position:fixed;bottom:7%;left:50%;width:90vw;transform:translate(-50%,15px);z-index:80;text-align:center;color:#4d7880;font-size:clamp(19px,4vw,27px);font-weight:600;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .5s,transform .5s}#image7Message.show{opacity:1;visibility:visible;transform:translate(-50%,0)}#oneMoreBox{z-index:120;flex-direction:column;gap:20px;background:radial-gradient(circle,#f5fdff,#dff5f8)}#oneMoreText{font-size:clamp(26px,5vw,40px);font-weight:600;color:#4d7880;text-align:center}#endBox{z-index:150;background:#000;color:white;font-size:clamp(32px,7vw,55px)}#confessionBox{z-index:170;background:radial-gradient(circle,#fff9fc,#f8d9e7)}.confession-content{width:min(92vw,560px);padding:38px 28px}.confession-text{font-size:clamp(19px,4.4vw,25px);line-height:1.7;color:#9b426b}#answerBox{z-index:200;background:#fff5f9f7}.answer-title{color:#b84c75;font-size:25px}#answerInput{display:block;width:100%;min-height:145px;resize:vertical;padding:16px;border-radius:16px;border:1px solid #ddb4c8;background:#fffafd;line-height:1.5;color:#555}#answerInput:focus{outline:2px solid #d879a8}#sendAnswerBtn{margin-top:18px;background:linear-gradient(135deg,#ff8fb4,#e85c91)}#sendAnswerBtn:disabled{opacity:.6}#answerStatus{min-height:25px;margin-top:15px;color:#b84c75;font-size:14px}#answerStatus.error{color:#c43a42}@media(max-width:600px){.cat-envelope{width:245px;height:205px}.cat-body{height:165px}.cat-label{bottom:30px}.hint{bottom:10%;font-size:14px}#viewer{max-height:73dvh;border-radius:12px}#videoViewer2{height:82dvh}.panel{padding:22px 17px}.question-text{font-size:18px}}
+
+#assetWarning:not([hidden]){position:fixed;z-index:500;left:50%;top:50%;transform:translate(-50%,-50%);width:min(90vw,500px);padding:22px;background:#fff;border:2px solid #e7a2bd;border-radius:16px;box-shadow:0 12px 40px #0002;color:#8c375d;text-align:center;font-size:16px;line-height:1.5}
+
+
+/* ==============================================
+   NÂNG CẤP GIAO DIỆN: ẢNH 9 & 10
+   Hai ảnh luôn nằm trong cùng một khung 16:9.
+   object-fit: contain bảo toàn toàn bộ nội dung ảnh.
+============================================== */
+#viewer.final-photo {
+  width: min(92vw, 1040px);
+  height: min(72dvh, 585px);
+  max-width: 92vw;
+  max-height: 72dvh;
+  object-fit: contain;
+  background: #111015;
+  border: 5px solid #d8edf0;
+  border-radius: 20px;
+  padding: 6px;
+  box-shadow: 0 0 0 2px rgba(255,255,255,.72),0 24px 70px rgba(0,0,0,.35);
+}
+
+/* Video 1 có cùng phong cách khung với Video 2 */
+#videoViewer {
+  width: 94vw;
+  height: 85dvh;
+  max-width: 1400px;
+  max-height: 800px;
+  object-fit: contain;
+  border: 7px solid #ccecf1;
+  border-radius: 22px;
+  box-shadow: 0 0 0 3px rgba(255,255,255,.75),0 20px 60px rgba(80,140,150,.25);
+}
+#videoViewer2 {
+  box-shadow: 0 0 0 3px rgba(255,255,255,.75),0 20px 60px rgba(80,140,150,.25);
+}
+
+/* Trang lời tỏ tình: giấy thư, ánh sáng, tim và ngôi sao */
+#confessionBox {
+  overflow: hidden;
+  background: radial-gradient(ellipse at 15% 12%,#fffefa 0,transparent 45%),
+              radial-gradient(ellipse at 85% 80%,#f6bfd8 0,transparent 50%),
+              linear-gradient(145deg,#fce7f0 0%,#fff3f7 48%,#e8e2fa 100%);
+}
+#confessionBox::before,#confessionBox::after {
+  content:"";
+  position:absolute;
+  width: 38vmax;
+  height: 38vmax;
+  border: 2px solid rgba(255,255,255,.55);
+  border-radius: 50%;
+  pointer-events:none;
+  z-index:0;
+}
+#confessionBox::before {top:-23vmax;left:-17vmax;box-shadow:0 0 0 40px rgba(255,255,255,.09),0 0 0 100px rgba(255,255,255,.055)}
+#confessionBox::after {bottom:-25vmax;right:-16vmax;box-shadow:0 0 0 45px rgba(255,255,255,.1)}
+.confession-content {
+  position:relative;
+  z-index:2;
+  width:min(92vw,570px);
+  padding: 48px 38px 40px;
+  border:1px solid rgba(255,255,255,.96);
+  border-radius: 28px;
+  background: linear-gradient(155deg,rgba(255,255,255,.96),rgba(255,248,251,.92));
+  box-shadow:0 28px 75px rgba(155,66,107,.2),inset 0 0 0 7px rgba(253,231,241,.8);
+  transform: translateY(25px) scale(.96);
+  transition:transform .85s cubic-bezier(.18,.8,.2,1);
+}
+#confessionBox.show .confession-content {transform:translateY(0) scale(1)}
+.confession-seal {
+  margin: 0 auto 16px;
+  width:76px;height:76px;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(145deg,#ffecf4,#f7c4da);
+  border-radius:50%;
+  box-shadow:0 8px 22px #d772a333;
+  font-size:38px;
+  animation:seal-float 3s ease-in-out infinite;
+}
+.confession-eyebrow {
+  color:#ad718f;
+  letter-spacing:3px;
+  font-weight:700;
+  font-size:clamp(10px,2.7vw,12px);
+}
+.confession-divider {display:flex;justify-content:center;align-items:center;gap:14px;color:#d887ad;margin:19px 0 14px;font-size:15px}
+.confession-divider span:nth-child(2) {font-size:21px;color:#d76897}
+.confession-text {
+  margin:0;
+  font-family:Georgia,'Times New Roman',serif;
+  font-size:clamp(19px,4vw,24px);
+  color:#924b6b;
+  line-height:1.72;
+}
+.confession-text strong {font-weight:600;color:#ae416d}
+.confession-signature {margin:21px 0 27px;font-family:Georgia,serif;font-size:17px;font-style:italic;color:#b87c96}
+#answerBtn {
+  background:linear-gradient(110deg,#e48cad,#d55d8f);
+  padding:15px 29px;
+  box-shadow:0 10px 25px #c3538040;
+  transition:transform .2s,box-shadow .2s;
+}
+#answerBtn:hover {transform:translateY(-3px);box-shadow:0 14px 28px #c3538050}
+#answerBtn span {margin-left:9px}
+.confession-decor {position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.confession-decor span {position:absolute;color:#da80a6;font-size:clamp(18px,4vw,36px);opacity:.7;animation:twinkle 4s ease-in-out infinite}
+.confession-decor span:nth-child(1){left:11%;top:15%}
+.confession-decor span:nth-child(2){left:17%;bottom:18%;animation-delay:.7s}
+.confession-decor span:nth-child(3){right:13%;top:18%;animation-delay:1.3s}
+.confession-decor span:nth-child(4){right:17%;bottom:14%;animation-delay:2s}
+.confession-decor span:nth-child(5){left:8%;top:60%;animation-delay:2.7s}
+.confession-decor span:nth-child(6){right:9%;top:59%;animation-delay:1.7s}
+@keyframes twinkle {50%{transform:translateY(-12px) rotate(12deg) scale(1.25);opacity:1}}
+@keyframes seal-float {50%{transform:translateY(-6px)}}
+@media(max-width:600px){
+  #viewer.final-photo{width:94vw;height:64dvh;max-height:64dvh;border-width:4px;padding:3px;border-radius:15px}
+  #videoViewer,#videoViewer2{width:94vw;height:82dvh;border-width:6px;border-radius:20px}
+  .confession-content{padding:34px 21px 30px}
+  .confession-seal{width:65px;height:65px;font-size:32px}
+  .confession-signature{margin:15px 0 23px}
+  .confession-decor span{opacity:.45}
+}
+@media(prefers-reduced-motion:reduce){.confession-decor span,.confession-seal{animation:none}}
