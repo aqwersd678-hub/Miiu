@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let stage = 'cat', catClicks = 0, beforeIndex = 0, afterIndex = 0;
   let changingImage = false;
   let imageToken = 0;
+  let music3Primed = false;
 
   // Không phụ thuộc vào tải video/nhạc, tránh Loading bị treo.
   window.setTimeout(() => loading.classList.add('hide'), 650);
@@ -109,7 +110,9 @@ document.addEventListener('DOMContentLoaded', () => {
         afterIndex++;
         showImage(after[afterIndex], afterIndex < 3 ? 'blue' : 'black');
       } else {
-        // Chạm ảnh 10 để phát video 2.
+        // Chạm ảnh 10: chuẩn bị music3 bằng tương tác thật,
+        // giữ im tiếng cho đến khi video2 kết thúc.
+        primeMusic3();
         startVideo2();
       }
     }
@@ -201,6 +204,52 @@ document.addEventListener('DOMContentLoaded', () => {
     oneMore.classList.remove('show'); stage = 'after'; afterIndex = 1;
     showImage(after[1], 'blue'); play(music2);
   });
+  // iOS/Safari thường chỉ cho phát nhạc khi có thao tác người dùng.
+  // Khởi động không tiếng lúc chạm ảnh 10 để có thể bật tiếng
+  // chính xác khi video 2 kết thúc, không phải sau trang confession.
+  function primeMusic3() {
+    if (!music3) return;
+    music3Primed = true;
+    music3.loop = true;
+    music3.muted = true;
+    music3.volume = 0;
+    try { music3.currentTime = 0; } catch (_) {}
+    const p = music3.play();
+    if (p && p.catch) p.catch(err => {
+      console.info('Chưa thể chuẩn bị music3:', err);
+      music3Primed = false;
+    });
+  }
+  function showMusicRetry() {
+    if (!confession) return;
+    let button = document.getElementById('musicRetryBtn');
+    if (!button) {
+      button = document.createElement('button');
+      button.type = 'button';
+      button.id = 'musicRetryBtn';
+      button.textContent = '♫ Chạm để bật nhạc';
+      button.addEventListener('click', () => {
+        music3.muted = false;
+        music3.volume = 1;
+        music3.play().then(() => { button.hidden = true; }).catch(console.warn);
+      });
+      confession.querySelector('.confession-content')?.appendChild(button);
+    }
+    button.hidden = false;
+  }
+  function beginMusic3() {
+    stop(music2);
+    if (!music3) return;
+    music3.muted = false;
+    music3.volume = 1;
+    try { music3.currentTime = 0; } catch (_) {}
+    if (music3Primed && !music3.paused) return;
+    const result = music3.play();
+    if (result && result.catch) result.catch(err => {
+      console.warn('Trình duyệt chặn music3:', err);
+      showMusicRetry();
+    });
+  }
   function startVideo2() {
     stage = 'video2'; hideImage(); background('black');
     video2.classList.add('video-show');
@@ -208,19 +257,20 @@ document.addEventListener('DOMContentLoaded', () => {
     videoFallback(video2, () => {
       if (stage !== 'video2') return;
       video2.classList.remove('video-show');
+      // Bắt đầu music3 ngay đúng thời điểm video2 kết thúc.
+      beginMusic3();
       showConfession();
     });
   }
   function showConfession() {
-    stage = 'confession'; hideImage(); stop(music2);
+    stage = 'confession'; hideImage();
     background('pink'); confession.classList.add('show');
-    // Trình duyệt có thể chặn nhạc khi không có thao tác trực tiếp.
-    play(music3);
   }
   $('answerBtn').addEventListener('click', () => {
     if (stage !== 'confession') return;
     confession.classList.remove('show'); stage = 'answer';
-    answerBox.classList.add('show'); play(music3);
+    answerBox.classList.add('show');
+    if (music3 && music3.paused) beginMusic3();
     setTimeout(() => answerInput.focus(), 350);
   });
   async function sendAnswer() {

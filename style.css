@@ -159,3 +159,42 @@
   #viewer.final-photo {width:94vw;height:64dvh;max-height:64dvh;}
   #videoViewer, #videoViewer2 {max-width:94vw;max-height:82dvh;border-width:7px;}
 }
+
+/* ===== v4: Ảnh 9 và 10 chung khung cùng phong cách video ===== */
+#viewer.final-photo, #viewer.final-photo.show {
+  box-sizing: border-box;
+  width: min(94vw, 1360px);
+  height: 82dvh;
+  max-width: 94vw;
+  max-height: 82dvh;
+  padding: 0;
+  object-fit: contain;
+  object-position: center;
+  border: 7px solid #ccecf1;
+  border-radius: 22px;
+  background: #000;
+  box-shadow: 0 0 0 3px rgba(255,255,255,.75), 0 20px 60px rgba(80,140,150,.25);
+}
+#viewer.final-photo { display:none; }
+#viewer.final-photo.show { display:block; }
+#musicRetryBtn {
+  display:block;
+  margin:14px auto 0;
+  padding:9px 18px;
+  font-size:14px;
+  color:#a64778;
+  border:1px solid #f0b7d0;
+  border-radius:999px;
+  background:#fff5fa;
+}
+#musicRetryBtn[hidden] { display:none; }
+@media (max-width:600px) {
+  #viewer.final-photo, #viewer.final-photo.show {
+    width:94vw;
+    height:82dvh;
+    max-width:94vw;
+    max-height:82dvh;
+    border-width:7px;
+    border-radius:20px;
+  }
+}
