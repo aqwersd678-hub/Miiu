@@ -127,3 +127,35 @@
   .confession-decor span{opacity:.45}
 }
 @media(prefers-reduced-motion:reduce){.confession-decor span,.confession-seal{animation:none}}
+
+/* ===== Exact-fit media fixes (v3) ===== */
+#viewer, #viewer.final-photo {
+  transition: none !important;
+  box-sizing: border-box;
+}
+#viewer.final-photo {
+  display: none;
+  width: min(92vw, 1040px);
+  height: min(70dvh, 590px);
+  max-height: 70dvh;
+  object-fit: contain;
+  padding: 5px;
+}
+#viewer.final-photo.show { display: block; }
+#videoViewer, #videoViewer2 {
+  /* JavaScript assigns pixels based on videoWidth / videoHeight. */
+  box-sizing: border-box;
+  width: auto;
+  height: auto;
+  max-width: 94vw;
+  max-height: 82dvh;
+  object-fit: contain;
+  object-position: center;
+  border: 7px solid #ccecf1;
+  border-radius: 22px;
+  background: #000;
+}
+@media (max-width:600px) {
+  #viewer.final-photo {width:94vw;height:64dvh;max-height:64dvh;}
+  #videoViewer, #videoViewer2 {max-width:94vw;max-height:82dvh;border-width:7px;}
+}

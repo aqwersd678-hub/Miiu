@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const before = ['./1.png','./2.png','./3.png'];
   const after = ['./7.png','./4.png','./5.png','./8.png','./9.png','./10.png'];
   let stage = 'cat', catClicks = 0, beforeIndex = 0, afterIndex = 0;
+  let changingImage = false;
+  let imageToken = 0;
 
   // Không phụ thuộc vào tải video/nhạc, tránh Loading bị treo.
   window.setTimeout(() => loading.classList.add('hide'), 650);
@@ -45,23 +47,54 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => f.remove(), 3500);
     }
   }
-  function showImage(path, bg) {
-    // Hai ảnh 9 và 10 dùng chung kích thước khung, không bị kéo méo.
-    viewer.classList.toggle('final-photo', path === './9.png' || path === './10.png');
-    viewer.src = path;
-    background(bg);
-    viewer.classList.add('show');
-    viewer.onerror = () => {
-      console.error('Thiếu ảnh:', path);
-      viewer.removeAttribute('src');
-      viewer.classList.remove('show');
+  // Only one IMG exists. Finish loading before swapping to prevent frame overlap.
+  async function showImage(path, bg) {
+    if (!viewer) return;
+    const token = ++imageToken;
+    changingImage = true;
+    viewer.classList.remove('show');
+    viewer.style.visibility = 'hidden';
+
+    const preloaded = new Image();
+    try {
+      preloaded.src = path;
+      if (preloaded.decode) {
+        await preloaded.decode();
+      } else {
+        await new Promise((resolve, reject) => {
+          if (preloaded.complete) return preloaded.naturalWidth ? resolve() : reject(new Error(path));
+          preloaded.onload = resolve;
+          preloaded.onerror = reject;
+        });
+      }
+      if (token !== imageToken) return;
+      viewer.classList.toggle('final-photo', path === './9.png' || path === './10.png');
+      viewer.src = path;
+      background(bg);
+      viewer.style.visibility = 'visible';
+      viewer.classList.add('show');
       const warning = document.getElementById('assetWarning');
-      if (warning) { warning.hidden = false; warning.textContent = '⚠️ Không tìm thấy ' + path + '. Hãy tải ảnh/video/nhạc gốc lên cùng thư mục với index.html.'; }
-    };
-    viewer.onload = () => { const warning = document.getElementById('assetWarning'); if (warning) warning.hidden = true; };
+      if (warning) warning.hidden = true;
+    } catch (err) {
+      if (token !== imageToken) return;
+      console.error('Không tải được ảnh', path, err);
+      const warning = document.getElementById('assetWarning');
+      if (warning) {
+        warning.hidden = false;
+        warning.textContent = 'Không tải được ' + path + '. Kiểm tra tên ảnh và đường dẫn.';
+      }
+    } finally {
+      if (token === imageToken) changingImage = false;
+    }
   }
-  function hideImage() { viewer.classList.remove('show'); }
+  function hideImage() {
+    ++imageToken;
+    changingImage = false;
+    viewer.classList.remove('show');
+    viewer.style.visibility = 'hidden';
+  }
   function nextImage() {
+    if (changingImage) return;
     if (stage === 'before') {
       if (beforeIndex < before.length - 1) {
         showImage(before[++beforeIndex], 'pink');
@@ -98,6 +131,32 @@ document.addEventListener('DOMContentLoaded', () => {
   viewer.addEventListener('keydown', e => {
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); nextImage(); }
   });
+  // Match the actual video aspect ratio instead of forcing 94vw x 82dvh.
+  function fitVideoToFrame(video) {
+    if (!video) return;
+    const vw = video.videoWidth;
+    const vh = video.videoHeight;
+    if (!vw || !vh) return;
+    const maxWidth = Math.min(window.innerWidth * 0.94, 1360);
+    const maxHeight = window.innerHeight * 0.82;
+    const borderSpace = 14; // 7px border on both sides
+    const availableWidth = maxWidth - borderSpace;
+    const availableHeight = maxHeight - borderSpace;
+    const scale = Math.min(availableWidth / vw, availableHeight / vh);
+    const width = Math.max(1, vw * scale + borderSpace);
+    const height = Math.max(1, vh * scale + borderSpace);
+    video.style.width = width + 'px';
+    video.style.height = height + 'px';
+  }
+  [video1, video2].forEach(video => {
+    if (!video) return;
+    video.addEventListener('loadedmetadata', () => fitVideoToFrame(video));
+  });
+  window.addEventListener('resize', () => {
+    if (stage === 'video1') fitVideoToFrame(video1);
+    if (stage === 'video2') fitVideoToFrame(video2);
+  });
+
   function videoFallback(video, next) {
     video.addEventListener('ended', next);
     video.addEventListener('error', () => {
@@ -117,6 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function startVideo1() {
     stage = 'video1'; hideImage(); background('black');
     video1.classList.add('video-show');
+    fitVideoToFrame(video1);
     videoFallback(video1, () => {
       if (stage !== 'video1') return;
       stage = 'question'; stop(music1);
@@ -144,6 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function startVideo2() {
     stage = 'video2'; hideImage(); background('black');
     video2.classList.add('video-show');
+    fitVideoToFrame(video2);
     videoFallback(video2, () => {
       if (stage !== 'video2') return;
       video2.classList.remove('video-show');
