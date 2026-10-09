@@ -8,39 +8,6 @@
 #assetWarning:not([hidden]){position:fixed;z-index:500;left:50%;top:50%;transform:translate(-50%,-50%);width:min(90vw,500px);padding:22px;background:#fff;border:2px solid #e7a2bd;border-radius:16px;box-shadow:0 12px 40px #0002;color:#8c375d;text-align:center;font-size:16px;line-height:1.5}
 
 
-/* ==============================================
-   NÂNG CẤP GIAO DIỆN: ẢNH 9 & 10
-   Hai ảnh luôn nằm trong cùng một khung 16:9.
-   object-fit: contain bảo toàn toàn bộ nội dung ảnh.
-============================================== */
-#viewer.final-photo {
-  width: min(92vw, 1040px);
-  height: min(72dvh, 585px);
-  max-width: 92vw;
-  max-height: 72dvh;
-  object-fit: contain;
-  background: #111015;
-  border: 5px solid #d8edf0;
-  border-radius: 20px;
-  padding: 6px;
-  box-shadow: 0 0 0 2px rgba(255,255,255,.72),0 24px 70px rgba(0,0,0,.35);
-}
-
-/* Video 1 có cùng phong cách khung với Video 2 */
-#videoViewer {
-  width: 94vw;
-  height: 85dvh;
-  max-width: 1400px;
-  max-height: 800px;
-  object-fit: contain;
-  border: 7px solid #ccecf1;
-  border-radius: 22px;
-  box-shadow: 0 0 0 3px rgba(255,255,255,.75),0 20px 60px rgba(80,140,150,.25);
-}
-#videoViewer2 {
-  box-shadow: 0 0 0 3px rgba(255,255,255,.75),0 20px 60px rgba(80,140,150,.25);
-}
-
 /* Trang lời tỏ tình: giấy thư, ánh sáng, tim và ngôi sao */
 #confessionBox {
   overflow: hidden;
@@ -128,102 +95,70 @@
 }
 @media(prefers-reduced-motion:reduce){.confession-decor span,.confession-seal{animation:none}}
 
-/* ===== Exact-fit media fixes (v3) ===== */
-#viewer, #viewer.final-photo {
-  transition: none !important;
-  box-sizing: border-box;
+
+/* ===== Photo crossfade and matching video-style frames ===== */
+#viewer {
+  /* Single image element: never stack two photos. */
+  transition: opacity .30s ease, transform .45s ease;
+  will-change: opacity;
+}
+#viewer.show {
+  display: block;
+  opacity: 1;
+}
+#viewer.photo-fading {
+  opacity: 0;
+  pointer-events: none;
 }
 #viewer.final-photo {
   display: none;
-  width: min(92vw, 1040px);
-  height: min(70dvh, 590px);
-  max-height: 70dvh;
-  object-fit: contain;
-  padding: 5px;
-}
-#viewer.final-photo.show { display: block; }
-#videoViewer, #videoViewer2 {
-  /* JavaScript assigns pixels based on videoWidth / videoHeight. */
-  box-sizing: border-box;
-  width: auto;
-  height: auto;
-  max-width: 94vw;
-  max-height: 82dvh;
-  object-fit: contain;
-  object-position: center;
-  border: 7px solid #ccecf1;
-  border-radius: 22px;
-  background: #000;
-}
-@media (max-width:600px) {
-  #viewer.final-photo {width:94vw;height:64dvh;max-height:64dvh;}
-  #videoViewer, #videoViewer2 {max-width:94vw;max-height:82dvh;border-width:7px;}
-}
-
-/* ===== v4: Ảnh 9 và 10 chung khung cùng phong cách video ===== */
-#viewer.final-photo, #viewer.final-photo.show {
   box-sizing: border-box;
   width: min(94vw, 1360px);
   height: 82dvh;
   max-width: 94vw;
   max-height: 82dvh;
   padding: 0;
+  border: 7px solid #ccecf1;
+  border-radius: 22px;
   object-fit: contain;
   object-position: center;
+  background: #000;
+  box-shadow: 0 0 0 3px rgba(255,255,255,.75),
+              0 20px 60px rgba(80,140,150,.25);
+}
+#viewer.final-photo.show { display: block; }
+#videoViewer, #videoViewer2 {
+  box-sizing: border-box;
+  width: auto;
+  height: auto;
+  max-width: 94vw;
+  max-height: 82dvh;
+  object-fit: contain;
   border: 7px solid #ccecf1;
   border-radius: 22px;
   background: #000;
-  box-shadow: 0 0 0 3px rgba(255,255,255,.75), 0 20px 60px rgba(80,140,150,.25);
+  box-shadow: 0 0 0 3px rgba(255,255,255,.75),
+              0 20px 60px rgba(80,140,150,.25);
 }
-#viewer.final-photo { display:none; }
-#viewer.final-photo.show { display:block; }
 #musicRetryBtn {
-  display:block;
-  margin:14px auto 0;
-  padding:9px 18px;
-  font-size:14px;
-  color:#a64778;
-  border:1px solid #f0b7d0;
-  border-radius:999px;
-  background:#fff5fa;
+  display: block;
+  margin: 14px auto 0;
+  padding: 9px 18px;
+  font-size: 14px;
+  color: #a64778;
+  border: 1px solid #f0b7d0;
+  border-radius: 999px;
+  background: #fff5fa;
 }
-#musicRetryBtn[hidden] { display:none; }
+#musicRetryBtn[hidden], #assetWarning[hidden] { display:none!important; }
 @media (max-width:600px) {
-  #viewer.final-photo, #viewer.final-photo.show {
+  #viewer.final-photo {
     width:94vw;
     height:82dvh;
-    max-width:94vw;
     max-height:82dvh;
-    border-width:7px;
     border-radius:20px;
   }
 }
-
-/* Hiển thị rõ lỗi tài nguyên, không để trang trống */
-#assetWarning:not([hidden]) {
- position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);
- width:min(90vw,460px);padding:18px 20px;z-index:900;
- background:#fff6fa;color:#9d315e;border:2px solid #edacc7;
- border-radius:18px;text-align:center;box-shadow:0 12px 35px #0002;
+@media (prefers-reduced-motion:reduce) {
+  #viewer {transition:none;}
 }
-#assetWarning[hidden]{display:none!important}
-
-/* FINAL OVERRIDES - thống nhất khung ảnh 9/10 và 2 video */
-#viewer.final-photo, #viewer.final-photo.show {
-  box-sizing:border-box!important;
-  width:min(94vw, 1360px)!important;
-  height:82dvh!important;
-  max-width:94vw!important;
-  max-height:82dvh!important;
-  padding:0!important;
-  border:7px solid #ccecf1!important;
-  border-radius:22px!important;
-  object-fit:contain!important;
-  object-position:center!important;
-  background:#000!important;
-  box-shadow:0 0 0 3px rgba(255,255,255,.7),0 20px 60px rgba(80,140,150,.25)!important;
-}
-#viewer.final-photo.show{display:block!important}
-#viewer.final-photo:not(.show){display:none!important}
-#videoViewer,#videoViewer2{object-fit:contain!important}
-#musicRetryBtn[hidden]{display:none!important}
