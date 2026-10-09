@@ -198,3 +198,32 @@
     border-radius:20px;
   }
 }
+
+/* Hiển thị rõ lỗi tài nguyên, không để trang trống */
+#assetWarning:not([hidden]) {
+ position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);
+ width:min(90vw,460px);padding:18px 20px;z-index:900;
+ background:#fff6fa;color:#9d315e;border:2px solid #edacc7;
+ border-radius:18px;text-align:center;box-shadow:0 12px 35px #0002;
+}
+#assetWarning[hidden]{display:none!important}
+
+/* FINAL OVERRIDES - thống nhất khung ảnh 9/10 và 2 video */
+#viewer.final-photo, #viewer.final-photo.show {
+  box-sizing:border-box!important;
+  width:min(94vw, 1360px)!important;
+  height:82dvh!important;
+  max-width:94vw!important;
+  max-height:82dvh!important;
+  padding:0!important;
+  border:7px solid #ccecf1!important;
+  border-radius:22px!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  background:#000!important;
+  box-shadow:0 0 0 3px rgba(255,255,255,.7),0 20px 60px rgba(80,140,150,.25)!important;
+}
+#viewer.final-photo.show{display:block!important}
+#viewer.final-photo:not(.show){display:none!important}
+#videoViewer,#videoViewer2{object-fit:contain!important}
+#musicRetryBtn[hidden]{display:none!important}

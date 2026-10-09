@@ -48,45 +48,30 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => f.remove(), 3500);
     }
   }
-  // Only one IMG exists. Finish loading before swapping to prevent frame overlap.
-  async function showImage(path, bg) {
+  // Hiển thị ảnh ngay; không chờ decode() khiến màn hình bị trống.
+  // Chỉ dùng một thẻ img nên ảnh 9 và 10 không thể chồng nhau.
+  function showImage(path, bg) {
     if (!viewer) return;
-    const token = ++imageToken;
+    ++imageToken;
     changingImage = true;
-    viewer.classList.remove('show');
-    viewer.style.visibility = 'hidden';
-
-    const preloaded = new Image();
-    try {
-      preloaded.src = path;
-      if (preloaded.decode) {
-        await preloaded.decode();
-      } else {
-        await new Promise((resolve, reject) => {
-          if (preloaded.complete) return preloaded.naturalWidth ? resolve() : reject(new Error(path));
-          preloaded.onload = resolve;
-          preloaded.onerror = reject;
-        });
-      }
-      if (token !== imageToken) return;
-      viewer.classList.toggle('final-photo', path === './9.png' || path === './10.png');
-      viewer.src = path;
-      background(bg);
-      viewer.style.visibility = 'visible';
-      viewer.classList.add('show');
-      const warning = document.getElementById('assetWarning');
-      if (warning) warning.hidden = true;
-    } catch (err) {
-      if (token !== imageToken) return;
-      console.error('Không tải được ảnh', path, err);
-      const warning = document.getElementById('assetWarning');
+    background(bg);
+    viewer.classList.toggle('final-photo', path === './9.png' || path === './10.png');
+    const warning = document.getElementById('assetWarning');
+    if (warning) warning.hidden = true;
+    viewer.onerror = () => {
+      console.error('Không tải được ảnh:', path);
       if (warning) {
+        warning.textContent = 'Không tải được ' + path + '. Kiểm tra tên file và vị trí ảnh trên website.';
         warning.hidden = false;
-        warning.textContent = 'Không tải được ' + path + '. Kiểm tra tên ảnh và đường dẫn.';
       }
-    } finally {
-      if (token === imageToken) changingImage = false;
-    }
+      changingImage = false;
+    };
+    viewer.onload = () => { changingImage = false; };
+    viewer.style.visibility = 'visible';
+    viewer.classList.add('show');
+    viewer.src = path;
+    // Giải phóng khóa click kể cả khi trình duyệt không phát sự kiện load.
+    setTimeout(() => { changingImage = false; }, 1200);
   }
   function hideImage() {
     ++imageToken;
@@ -161,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function videoFallback(video, next) {
-    video.addEventListener('ended', next);
+    video.addEventListener('ended', next, {once:true});
     video.addEventListener('error', () => {
       console.warn('Không tải được video:', video.currentSrc);
       next();
@@ -243,7 +228,11 @@ document.addEventListener('DOMContentLoaded', () => {
     music3.muted = false;
     music3.volume = 1;
     try { music3.currentTime = 0; } catch (_) {}
-    if (music3Primed && !music3.paused) return;
+    if (music3Primed && !music3.paused) {
+      const retry = document.getElementById('musicRetryBtn');
+      if (retry) retry.hidden = true;
+      return;
+    }
     const result = music3.play();
     if (result && result.catch) result.catch(err => {
       console.warn('Trình duyệt chặn music3:', err);
