@@ -55,10 +55,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (imageCache.has(path)) return imageCache.get(path);
     const promise = new Promise((resolve, reject) => {
       const img = new Image();
-      img.onload = () => resolve(path);
+      img.onload = () => resolve(img);
       img.onerror = () => reject(new Error('Không tải được ' + path));
       img.src = path;
-      if (img.complete && img.naturalWidth) resolve(path);
+      if (img.complete && img.naturalWidth) resolve(img);
     });
     imageCache.set(path, promise);
     return promise;
@@ -68,30 +68,57 @@ document.addEventListener('DOMContentLoaded', () => {
     const next = all[all.indexOf(path) + 1];
     if (next) preloadImage(next).catch(() => {});
   }
+  // Scale the photograph FRAME to the original photograph, exactly as videos.
+  // The frame can never contain a previous image behind a transparent PNG.
+  function fitFinalPhoto(image) {
+    const maxW = Math.min(window.innerWidth * 0.94, 1360);
+    const maxH = window.innerHeight * 0.82;
+    const border = window.innerWidth <= 600 ? 12 : 14;
+    const iw = image.naturalWidth || 1;
+    const ih = image.naturalHeight || 1;
+    const scale = Math.min((maxW - border) / iw, (maxH - border) / ih);
+    viewer.style.width = Math.max(1, Math.round(iw * scale + border)) + 'px';
+    viewer.style.height = Math.max(1, Math.round(ih * scale + border)) + 'px';
+  }
+
   async function showImage(path, bg) {
     if (!viewer) return;
     const token = ++imageToken;
     changingImage = true;
     const warning = document.getElementById('assetWarning');
     if (warning) warning.hidden = true;
-    const previouslyVisible = viewer.classList.contains('show');
     try {
-      // Giữ hình đang hiển thị tới khi hình kế đã tải xong.
-      await preloadImage(path);
+      // Wait for the next image to LOAD while keeping current one visible.
+      const loadedImage = await preloadImage(path);
       if (token !== imageToken) return;
-      if (previouslyVisible) {
+      const oldWasVisible = viewer.classList.contains('show');
+      if (oldWasVisible) {
         viewer.classList.add('photo-fading');
-        await new Promise(resolve => setTimeout(resolve, 310));
+        await new Promise(resolve => setTimeout(resolve, 330));
       }
       if (token !== imageToken) return;
+
+      // Hide and clear the old image BEFORE setting new source.
+      // Especially important for transparent 9.png / 10.png on Safari.
+      viewer.classList.remove('show');
+      viewer.style.visibility = 'hidden';
+      viewer.removeAttribute('src');
+      viewer.style.width = '';
+      viewer.style.height = '';
       background(bg);
-      viewer.classList.toggle('final-photo', path === './9.png' || path === './10.png');
+      const isLast = path === './9.png' || path === './10.png';
+      viewer.classList.toggle('final-photo', isLast);
+
       viewer.src = path;
+      // The cached image is already loaded, sizing can use intrinsic dimensions.
+      if (isLast) {
+        fitFinalPhoto(loadedImage);
+      }
       viewer.style.visibility = 'visible';
       viewer.classList.add('show');
-      // Force reflow before fading in for Safari / Chrome mobile.
+      // Ensure CSS transition occurs even on Safari.
       void viewer.offsetWidth;
-      viewer.classList.remove('photo-fading');
+      requestAnimationFrame(() => viewer.classList.remove('photo-fading'));
       preloadFollowing(path);
     } catch (error) {
       console.error(error);
@@ -106,8 +133,11 @@ document.addEventListener('DOMContentLoaded', () => {
   function hideImage() {
     ++imageToken;
     changingImage = false;
-    viewer.classList.remove('show','photo-fading','final-photo');
+    viewer.classList.remove('show', 'photo-fading', 'final-photo');
     viewer.style.visibility = 'hidden';
+    viewer.removeAttribute('src');
+    viewer.style.width = '';
+    viewer.style.height = '';
   }
   function nextImage() {
     if (changingImage) return;
@@ -173,6 +203,9 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('resize', () => {
     if (stage === 'video1') fitVideoToFrame(video1);
     if (stage === 'video2') fitVideoToFrame(video2);
+    if (viewer.classList.contains('show') && viewer.classList.contains('final-photo')) {
+      fitFinalPhoto(viewer);
+    }
   });
 
   function videoFallback(video, next) {
